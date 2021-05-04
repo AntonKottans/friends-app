@@ -1,13 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="./css/style.css" />
+		<title>Document</title>
+		<script src="./script.js"></script>
+	</head>
+	<body>
+		<aside class="controls-layout-container">
+			<div class="sort-menu">
+				<span class="sort-menu_label">BY AGE:</span>
+				<button class="sort-menu-button" id="age-ascending"></button>
+
+				<button class="sort-menu-button" id="age-descending"></button>
+				<span class="sort-menu_label">BY NAME:</span>
+
+				<button class="sort-menu-button" id="name-ascending"></button>
+
+				<button class="sort-menu-button" id="name-descending"></button>
+			</div>
+			<div class="filter-menu">
+				<div class="age-filter-container">
+					<input class="age-input" type="number" name="" id="" />
+					<input class="age-input" type="number" name="" id="" />
+					<button class="button-filter">FILTER BY AGE</button>
+				</div>
+				<div class="name-filter-container">
+					<input type="text" name="" id="name-input" />
+					<button class="button-filter">FILTER BY NAME</button>
+				</div>
+				<div class="sex-filter-container">
+					<div class="radio-container">
+						<input type="radio" name="radiobutton-sex" id="male" />
+						<label for="male">Male</label>
+						<input type="radio" name="radiobutton-sex" id="female" />
+						<label for="female">Female</label>
+						<input type="radio" name="radiobutton-sex" id="all" />
+						<label for="all">All</label>
+					</div>
+					<button class="button-filter">FILTER BY SEX</button>
+				</div>
+				<button class="button-filter">RESET</button>
+			</div>
+		</aside>
+		<main class="friends"></main>
+	</body>
 </html>

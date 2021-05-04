@@ -1,0 +1,58 @@
+$sort-button-background: #ff4081;
+$sort-button-background-hover: #FF5495;
+$filter-button-background-hover: #5365C9;
+$filter-button-background: #3f51b5;
+$menu-background: #88ccff;
+$male-friend-heading-background: #46b6ac;
+$female-friend-heading-background: #b683ae;
+
+.controls-layout-container {
+    background-color: $menu-background;
+    border-radius: 10px;
+
+	.sort-menu {
+		&_label {
+			color: white;
+		}
+        [id$='descending']{
+            background: center / 40px 20px no-repeat url('../img/descending-sort-svgrepo-com.svg'), $sort-button-background;
+        }
+        [id$='ascending']{
+            background: center / 40px 20px no-repeat url('../img/ascending-sort-svgrepo-com.svg'), $sort-button-background;
+        }
+        
+		&-button {
+			//background-color: $sort-button-background;
+            border: none;
+            border-radius: 5px;
+            &:hover{
+                cursor: pointer;
+                background-color: $sort-button-background-hover;
+            }
+            &.selected{
+                box-shadow: 0px 0px 10px $sort-button-background;
+            }
+		}
+
+	}
+
+	.filter-menu {
+		&_age-filter-container {
+		}
+		&_name-filter-container {
+		}
+		&_sex-filter-container {
+		}
+		.button-filter {
+			background-color: $filter-button-background;
+            border: none;
+            border-radius: 5px;
+            color: white;
+
+            &:hover {
+                cursor: pointer;
+                background-color: $filter-button-background-hover;
+            }
+		}
+	}
+}

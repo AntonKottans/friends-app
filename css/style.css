@@ -1,1 +1,74 @@
-span{width:100px}span span{width:101px;height:101px}p{width:100px}p p{width:101px}div{width:100px}div div{width:101px}
+* {
+  box-sizing: border-box; }
+
+.controls-layout-container {
+  width: max-content;
+  display: grid;
+  padding: 10px;
+  grid-gap: 10px;
+  justify-items: center; }
+  .controls-layout-container .sort-menu {
+    display: grid;
+    grid-template: repeat(2, max-content)/repeat(3, max-content);
+    grid-gap: 5px;
+    justify-items: center;
+    align-items: center; }
+    .controls-layout-container .sort-menu-button {
+      width: 50px;
+      height: 25px;
+      /* 			padding: 5px 10px;
+
+			.sort-icon {
+				width: 40px;
+				height: 20px;
+			} */ }
+  .controls-layout-container .filter-menu {
+    display: grid;
+    justify-items: center;
+    grid-gap: 5px; }
+    .controls-layout-container .filter-menu [class$="filter-container"] {
+      padding: 10px;
+      /* border: 2px solid green; */
+      display: grid;
+      justify-items: center;
+      grid-gap: 5px; }
+    .controls-layout-container .filter-menu .sex-filter-container .radio-container {
+      display: flex; }
+    .controls-layout-container .filter-menu .age-filter-container {
+      display: grid;
+      grid-template: repeat(2, max-content)/repeat(2, max-content);
+      justify-items: center;
+      align-items: center; }
+      .controls-layout-container .filter-menu .age-filter-container .age-input {
+        width: 50px; }
+      .controls-layout-container .filter-menu .age-filter-container .button-filter {
+        grid-area: 2/1/3/3; }
+    .controls-layout-container .filter-menu .button-filter {
+      width: max-content;
+      padding: 5px 10px; }
+
+.controls-layout-container {
+  background-color: #88ccff;
+  border-radius: 10px; }
+  .controls-layout-container .sort-menu_label {
+    color: white; }
+  .controls-layout-container .sort-menu [id$='descending'] {
+    background: center/40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"), #ff4081; }
+  .controls-layout-container .sort-menu [id$='ascending'] {
+    background: center/40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"), #ff4081; }
+  .controls-layout-container .sort-menu-button {
+    border: none;
+    border-radius: 5px; }
+    .controls-layout-container .sort-menu-button:hover {
+      cursor: pointer;
+      background-color: #FF5495; }
+    .controls-layout-container .sort-menu-button.selected {
+      box-shadow: 0px 0px 10px #ff4081; }
+  .controls-layout-container .filter-menu .button-filter {
+    background-color: #3f51b5;
+    border: none;
+    border-radius: 5px;
+    color: white; }
+    .controls-layout-container .filter-menu .button-filter:hover {
+      cursor: pointer;
+      background-color: #5365C9; }
