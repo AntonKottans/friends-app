@@ -92,24 +92,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
 						document
 							.querySelector(`[for=${target.getAttribute("id")}]`)
 							.classList.add("checked")
-						console.log(document.querySelector(`[for=${target.getAttribute("id")}]`))
 						updateContentAccordingToActiveFilters(+target.getAttribute("id").slice(6))
 					}
 				})
 				return container
 			}
-			/* 			let radioArr = new Array(pagesAmount).fill(undefined)
-			radioArr = radioArr
-				.map((none) => document.createElement("input"))
-				.map((inputNode, i) => {
-					inputNode.setAttribute("type", "radio")
-					inputNode.setAttribute("name", "page-nav")
-					inputNode.setAttribute("id", `radio-${i + 1}`)
-					inputNode.classList.add("radio-nav-input")
-					return inputNode
-				})
-				.forEach((radioNode) => radioContainerNode.appendChild(radioNode)) */
-			//debugger
 			return compose(createContainer, addLabels, addInputs, addEvent)
 		}
 		const createFragmentFromUsers = () => {
@@ -119,26 +106,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
 				.forEach((userCard) => fragment.appendChild(createFriendCard(userCard)))
 			return fragment
 		}
-		//console.log("pageNumber", pageNumber, "amountOfFriends", amountOfFriends)
 		document.querySelector(".friends-container").innerHTML = ""
-		//.childNodes.forEach((friendNode) => friendNode.classList.add("hidden"))
 		let fragment = createFragmentFromUsers()
-		/* 		userStorage
-			.getUsers()
-			.slice(amountOfFriends * (pageNumber - 1), amountOfFriends * pageNumber)
-			.forEach((userCard) => fragment.appendChild(createFriendCard(userCard))) */
-
 		document.querySelector(".friends-container").appendChild(fragment)
-		//debugger
+
 		if (document.querySelector(".radio-nav-container"))
 			document
 				.querySelector(".radio-nav-container")
 				.replaceWith(createPagesNavigation(totalPages))
-		else document.querySelector(".main").appendChild(createPagesNavigation(totalPages)) //appendChild(createPagesNavigation(totalPages))
+		else document.querySelector(".main").appendChild(createPagesNavigation(totalPages))
 
-		/* 		userStorage
-			.getUsers()
-			.slice(amountOfFriends * (page - 1), amountOfFriends * page - 1) */
 		setTimeout(() => {
 			document
 				.querySelector(".friends-container")
@@ -147,20 +124,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	}
 
 	const getUserData = async (url = "https://randomuser.me/api/") => {
-		/* https://randomuser.me/api/?results=5000
-        https://randomuser.me/api/?gender=female
-        https://randomuser.me/api/?password=upper,lower,1-16
-        https://randomuser.me/api/?seed=foobar use same seed for same generation
-        https://randomuser.me/api/?page=3&results=10&seed=abc pages, seed must be the same 
-        https://randomuser.me/api/?inc=gender,name,nat */
-		//let url =
-		//"https://randomuser.me/api/?inc=name,dob,email,cell,id,gender&seed=google&page=5&results=5"
 		let response = await fetch(url)
 		if (response.ok) {
 			let json = await response.json()
 			return json
 		} else {
-			console.log("function: getUser fetch Error:", response.status)
 			return response.status
 		}
 	}
@@ -170,29 +138,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		userStorage.clearUsers()
 
 		for (let i = 1; i <= page; i++) {
-			//console.log(`https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}`)
-			/* let url = `https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}` */
 			let users = await getUserData(
-				`https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}` /*url*/
+				`https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}`
 			)
 			users.results.forEach((user) => userStorage.addUser(user))
-			//console.log(users)
 		}
-		//console.log(userStorage.getUsers())
-
-		/* 		let flag = 0
-		while (flag++ < 10) {
-		    await getUser(url)
-		} */
 	}
-
-	console.log(userStorage.getUsers())
 
 	const createFriendCard = (user) => {
 		const createFriendContainer = () => {
 			let friend = document.createElement("div")
 			friend.classList.add("friend-container", "hidden")
-			//friend.setAttribute('display',)
+
 			return friend
 		}
 		const addName = (friend) => {
@@ -253,7 +210,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			addGender
 		)
 	}
-	//const showFriendCards 5 , 2 slice(8,9) count*(page-1),count*page-1
 
 	const getFilteredStorage = (filter = userFilter) => {
 		let filteredUserStorage = userStorage.getUsers()
@@ -280,7 +236,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			if (filter.getSortByAge() === "descending")
 				filteredUserStorage.sort((user1, user2) => user2.dob.age - user1.dob.age)
 		}
-		//debugger
+
 		if (filter.getSortByName() != undefined) {
 			if (filter.getSortByName() === "ascending")
 				filteredUserStorage.sort((user1, user2) => {
@@ -297,16 +253,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 						: -1
 				})
 		}
-		//console.log("userFilter ", userFilter)
-		//console.log("userStorage", userStorage.getUsers())
-		//console.log("filteredStorage ", filteredUserStorage)
+
 		return filteredUserStorage
 	}
 	const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
 		let filteredUserStorage = getFilteredStorage()
 		const calcPagesAmount = (filteredListOfFriends) => {
-			//debugger
-			//let columns = Math.trunc(document.querySelector(".friends-container").clientWidth / 220)
 			let asideWidth = 210
 			let columns = Math.trunc(
 				(document.querySelector(".body").clientWidth - asideWidth) / 220
@@ -316,7 +268,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			let amountPerPage = columns * rows
 
 			let amountOfPages = Math.ceil(filteredListOfFriends.length / amountPerPage)
-			console.log(amountOfPages)
 			return [amountPerPage, amountOfPages]
 		}
 		let [amountOfFriendsPerPage, totalPages] = calcPagesAmount(filteredUserStorage)
@@ -325,33 +276,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	}
 	const downloadFriends = async (amountPerPage = 10) => {
 		await downloadUsers({ page: 5, seed: "google", result: amountPerPage })
-		//console.log(userStorage.getUsers())
 
-		//showPage(1, amountPerPage)
 		updateContentAccordingToActiveFilters()
-
-		/* 		await downloadUsers({ page: 5, seed: "google", result: amountPerPage })
-		updateContentAccordingToActiveFilters() */
-
-		//showPage(1, amountPerPage, calcPagesAmount())
-
-		//console.log(userStorage.getUsers())
-		//console.log(userStorage.getUsers())
-		//console.log("userNode=", createFriendCard(userStorage.getUsers()[0]))
-		//let fragment = document.createDocumentFragment()
-		//console.log(fragment)
-		/* userStorage
-			.getUsers()
-			.forEach((userCard) => fragment.appendChild(createFriendCard(userCard))) */
-		//console.log(fragment)
 	}
 	downloadFriends()
 
 	const addEventListeners = () => {
 		document.querySelector(".sort-menu").addEventListener("click", ({ target }) => {
-			console.log(target)
 			if (target.matches(".sort-menu-button")) {
-				console.log("matches!")
 				document
 					.querySelectorAll(".sort-menu-button")
 					.forEach((buttonNode) => buttonNode.classList.remove("selected"))
@@ -360,7 +292,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		})
 
 		document.querySelector("#name-input").addEventListener("keypress", (event) => {
-			console.log(event.charCode)
 			return (
 				(event.charCode >= 65 && event.charCode <= 90) ||
 				(event.charCode >= 97 && event.charCode <= 122) ||
