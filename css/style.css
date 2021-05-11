@@ -1,9 +1,27 @@
 * {
   box-sizing: border-box; }
 
-.controls-layout-container {
-  width: max-content;
+.body {
+  background-color: lightgray; }
+
+.body {
   display: grid;
+  grid-template: 100% / max-content 1fr;
+  grid-gap: 10px;
+  height: 100vh;
+  margin: 0px;
+  padding: 10px;
+  overflow: hidden; }
+  .body .main {
+    width: 100%;
+    height: 100%; }
+
+.controls-layout-container {
+  position: sticky;
+  top: 10px;
+  width: max-content;
+  height: max-content;
+  display: inline-grid;
   padding: 10px;
   grid-gap: 10px;
   justify-items: center; }
@@ -23,6 +41,7 @@
 				height: 20px;
 			} */ }
   .controls-layout-container .filter-menu {
+    height: max-content;
     display: grid;
     justify-items: center;
     grid-gap: 5px; }
@@ -47,23 +66,77 @@
       width: max-content;
       padding: 5px 10px; }
 
+.friends-container {
+  width: 100%;
+  height: calc(100% - 20px - 1em);
+  display: inline-grid;
+  grid-auto-flow: row;
+  grid-template: max-content/repeat(auto-fit, 200px);
+  grid-gap: 10px;
+  /*     :nth-child(n+1){
+        margin: 5px
+    } */ }
+  .friends-container .friend-container.hidden {
+    visibility: hidden;
+    opacity: 0; }
+  .friends-container .friend-container {
+    transition: opacity 1s, visibility 1s;
+    width: 200px;
+    height: 290px;
+    display: inline-grid;
+    justify-items: center;
+    grid-template: max-content / 100%;
+    grid-gap: 5px; }
+    .friends-container .friend-container :nth-child(n+1) {
+      padding: 0px 10px; }
+    .friends-container .friend-container [class$="-name"] {
+      width: 100%;
+      text-align: center;
+      padding: 5px; }
+    .friends-container .friend-container .email {
+      width: 100%;
+      text-align: center; }
+
+.radio-nav-container {
+  display: inline-flex;
+  width: 100%;
+  justify-content: center; }
+  .radio-nav-container .radio-nav-label {
+    padding: 2px 5px;
+    font-size: 24px; }
+  .radio-nav-container .radio-nav-input {
+    display: none; }
+
+/* .body {
+	width: 100%;
+	.main {
+		width: max-content;
+		.friends-container {
+			width: max-content;
+
+		}
+	}
+}
+ */
 .controls-layout-container {
   background-color: #88ccff;
   border-radius: 10px; }
   .controls-layout-container .sort-menu_label {
     color: white; }
-  .controls-layout-container .sort-menu [id$='descending'] {
+  .controls-layout-container .sort-menu [id$="descending"] {
     background: center/40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"), #ff4081; }
-  .controls-layout-container .sort-menu [id$='ascending'] {
+  .controls-layout-container .sort-menu [id$="ascending"] {
     background: center/40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"), #ff4081; }
   .controls-layout-container .sort-menu-button {
     border: none;
     border-radius: 5px; }
     .controls-layout-container .sort-menu-button:hover {
       cursor: pointer;
-      background-color: #FF5495; }
+      background-color: #ff5495; }
     .controls-layout-container .sort-menu-button.selected {
       box-shadow: 0px 0px 10px #ff4081; }
+  .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label:hover {
+    cursor: pointer; }
   .controls-layout-container .filter-menu .button-filter {
     background-color: #3f51b5;
     border: none;
@@ -71,4 +144,32 @@
     color: white; }
     .controls-layout-container .filter-menu .button-filter:hover {
       cursor: pointer;
-      background-color: #5365C9; }
+      background-color: #5365c9; }
+
+.friends-container .friend-container {
+  background-color: white;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 2px 2px 5px gray; }
+  .friends-container .friend-container [class$="-name"],
+  .friends-container .friend-container .email {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  .friends-container .friend-container [class$="-name"] {
+    font-size: 20px; }
+  .friends-container .friend-container .friend-male-name {
+    background-color: #46b6ac; }
+  .friends-container .friend-container .friend-female-name {
+    background-color: #b683ae; }
+
+.radio-nav-container .radio-nav-label {
+  color: #3f51b5; }
+  .radio-nav-container .radio-nav-label:hover {
+    cursor: pointer;
+    color: #5365c9; }
+  .radio-nav-container .radio-nav-label.checked {
+    color: #ff4081; }
+
+.radio-nav-container .radio-nav-input:checked + .radio-nav-label {
+  color: #5365c9; }

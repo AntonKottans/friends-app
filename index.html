@@ -8,7 +8,7 @@
 		<title>Document</title>
 		<script src="./script.js"></script>
 	</head>
-	<body>
+	<body class="body">
 		<aside class="controls-layout-container">
 			<div class="sort-menu">
 				<span class="sort-menu_label">BY AGE:</span>
@@ -23,28 +23,28 @@
 			</div>
 			<div class="filter-menu">
 				<div class="age-filter-container">
-					<input class="age-input" type="number" name="" id="" />
-					<input class="age-input" type="number" name="" id="" />
-					<button class="button-filter">FILTER BY AGE</button>
+					<input class="age-input" type="number" name="" id="start-age" />
+					<input class="age-input" type="number" name="" id="end-age" />
+					<button class="button-filter" id="filter-by-age">FILTER BY AGE</button>
 				</div>
 				<div class="name-filter-container">
 					<input type="text" name="" id="name-input" />
-					<button class="button-filter">FILTER BY NAME</button>
+					<button class="button-filter" id="filter-by-name">FILTER BY NAME</button>
 				</div>
 				<div class="sex-filter-container">
 					<div class="radio-container">
 						<input type="radio" name="radiobutton-sex" id="male" />
-						<label for="male">Male</label>
+						<label class="sex-filter-label" for="male">Male</label>
 						<input type="radio" name="radiobutton-sex" id="female" />
-						<label for="female">Female</label>
-						<input type="radio" name="radiobutton-sex" id="all" />
-						<label for="all">All</label>
+						<label class="sex-filter-label" for="female">Female</label>
+						<input type="radio" name="radiobutton-sex" id="all" checked/>
+						<label class="sex-filter-label" for="all">All</label>
 					</div>
-					<button class="button-filter">FILTER BY SEX</button>
+					<button class="button-filter" id="filter-by-sex">FILTER BY SEX</button>
 				</div>
-				<button class="button-filter">RESET</button>
+				<button class="button-filter" id="reset">RESET</button>
 			</div>
 		</aside>
-		<main class="friends"></main>
+		<main class="main"><div class="friends-container"></div></main>
 	</body>
 </html>

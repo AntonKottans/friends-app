@@ -1,39 +1,40 @@
 $sort-button-background: #ff4081;
-$sort-button-background-hover: #FF5495;
-$filter-button-background-hover: #5365C9;
+$sort-button-background-hover: #ff5495;
+$filter-button-background-hover: #5365c9;
 $filter-button-background: #3f51b5;
 $menu-background: #88ccff;
 $male-friend-heading-background: #46b6ac;
 $female-friend-heading-background: #b683ae;
 
 .controls-layout-container {
-    background-color: $menu-background;
-    border-radius: 10px;
+	background-color: $menu-background;
+	border-radius: 10px;
 
 	.sort-menu {
 		&_label {
 			color: white;
 		}
-        [id$='descending']{
-            background: center / 40px 20px no-repeat url('../img/descending-sort-svgrepo-com.svg'), $sort-button-background;
-        }
-        [id$='ascending']{
-            background: center / 40px 20px no-repeat url('../img/ascending-sort-svgrepo-com.svg'), $sort-button-background;
-        }
-        
-		&-button {
-			//background-color: $sort-button-background;
-            border: none;
-            border-radius: 5px;
-            &:hover{
-                cursor: pointer;
-                background-color: $sort-button-background-hover;
-            }
-            &.selected{
-                box-shadow: 0px 0px 10px $sort-button-background;
-            }
+		[id$="descending"] {
+			background: center / 40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"),
+				$sort-button-background;
+		}
+		[id$="ascending"] {
+			background: center / 40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"),
+				$sort-button-background;
 		}
 
+		&-button {
+			//background-color: $sort-button-background;
+			border: none;
+			border-radius: 5px;
+			&:hover {
+				cursor: pointer;
+				background-color: $sort-button-background-hover;
+			}
+			&.selected {
+				box-shadow: 0px 0px 10px $sort-button-background;
+			}
+		}
 	}
 
 	.filter-menu {
@@ -41,18 +42,65 @@ $female-friend-heading-background: #b683ae;
 		}
 		&_name-filter-container {
 		}
-		&_sex-filter-container {
+		.sex-filter-container {
+            .radio-container{
+                .sex-filter-label:hover{
+                    cursor: pointer;
+                }
+            }
 		}
 		.button-filter {
 			background-color: $filter-button-background;
-            border: none;
-            border-radius: 5px;
-            color: white;
+			border: none;
+			border-radius: 5px;
+			color: white;
 
-            &:hover {
-                cursor: pointer;
-                background-color: $filter-button-background-hover;
-            }
+			&:hover {
+				cursor: pointer;
+				background-color: $filter-button-background-hover;
+			}
+		}
+	}
+}
+.friends-container {
+	.friend-container {
+		background-color: white;
+		border-radius: 5px;
+		overflow: hidden;
+		box-shadow: 2px 2px 5px gray;
+
+		[class$="-name"],
+		.email {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		[class$="-name"] {
+			font-size: 20px;
+		}
+		.friend-male-name {
+			background-color: $male-friend-heading-background;
+		}
+		.friend-female-name {
+			background-color: $female-friend-heading-background;
+		}
+	}
+}
+.radio-nav-container {
+	.radio-nav-label {
+		color: $filter-button-background;
+		&:hover {
+			cursor: pointer;
+			color: $filter-button-background-hover;
+		}
+        &.checked{
+			color: $sort-button-background
+		}
+
+	}
+	.radio-nav-input {
+        &:checked + .radio-nav-label{
+			color: $filter-button-background-hover;
 		}
 	}
 }
