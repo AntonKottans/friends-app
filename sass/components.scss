@@ -5,22 +5,33 @@ $filter-button-background: #3f51b5;
 $menu-background: #88ccff;
 $male-friend-heading-background: #46b6ac;
 $female-friend-heading-background: #b683ae;
+$body-background: #014546;
+$dark-gradient-color: #001d1e;
+$light-gradient-color: #014546;
+$light-gradient-color-hover: #236768;
+$text-color: #cccccc;
+$inputs-background-color: rgba(200, 200, 200, 0.5);
+
+.body {
+	background-color: $body-background;
+}
 
 .controls-layout-container {
-	background-color: $menu-background;
+	background: url("../img/leaf.svg"),
+		linear-gradient($dark-gradient-color 0%, $light-gradient-color 100%), $menu-background;
 	border-radius: 10px;
 
 	.sort-menu {
 		&_label {
-			color: white;
+			color: $text-color;
 		}
 		[id$="descending"] {
 			background: center / 40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"),
-				$sort-button-background;
+				$light-gradient-color;
 		}
 		[id$="ascending"] {
 			background: center / 40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"),
-				$sort-button-background;
+				$light-gradient-color;
 		}
 
 		&-button {
@@ -29,7 +40,7 @@ $female-friend-heading-background: #b683ae;
 			border-radius: 5px;
 			&:hover {
 				cursor: pointer;
-				background-color: $sort-button-background-hover;
+				background-color: $light-gradient-color-hover;
 			}
 			&.selected {
 				box-shadow: 0px 0px 10px $sort-button-background;
@@ -38,36 +49,65 @@ $female-friend-heading-background: #b683ae;
 	}
 
 	.filter-menu {
-		&_age-filter-container {
+		.age-input,
+		.name-input {
+			background-color: $inputs-background-color;
+			color: $text-color;
+			font-weight: 600;
+			border-radius: 5px;
+
+			&:focus {
+				outline: none;
+			}
 		}
-		&_name-filter-container {
+		.age-input {
+			text-align: center;
 		}
 		.sex-filter-container {
-            .radio-container{
-                .sex-filter-label:hover{
-                    cursor: pointer;
+			.radio-container {
+                .radio-sex-input{
+                    opacity: 0.5;
                 }
-            }
+				.sex-filter-label {
+					color: $text-color;
+					&:hover {
+						cursor: pointer;
+					}
+				}
+			}
+		}
+		/*         .age-input{
+            -moz-appearance: textfield;
+            -webkit-appearance: textfield;
+            appearance: textfield;
+        } */
+		input[type="number"]::-webkit-outer-spin-button,
+		input[type="number"]::-webkit-inner-spin-button {
+			display: none;
 		}
 		.button-filter {
-			background-color: $filter-button-background;
+			background-color: $light-gradient-color;
 			border: none;
 			border-radius: 5px;
-			color: white;
+			color: $text-color;
+			letter-spacing: 0.05em;
 
 			&:hover {
 				cursor: pointer;
-				background-color: $filter-button-background-hover;
+				background-color: $light-gradient-color-hover;
 			}
 		}
 	}
 }
 .friends-container {
 	.friend-container {
-		background-color: white;
+		//background-color: white;
+		background: linear-gradient(black 0%, $dark-gradient-color 10%, $light-gradient-color 100%),
+			white;
 		border-radius: 5px;
 		overflow: hidden;
-		box-shadow: 2px 2px 5px gray;
+		box-shadow: 2px 2px 5px $dark-gradient-color;
+		color: $text-color;
 
 		[class$="-name"],
 		.email {
@@ -79,10 +119,10 @@ $female-friend-heading-background: #b683ae;
 			font-size: 20px;
 		}
 		.friend-male-name {
-			background-color: $male-friend-heading-background;
+			//background-color: $male-friend-heading-background;
 		}
 		.friend-female-name {
-			background-color: $female-friend-heading-background;
+			//background-color: $female-friend-heading-background;
 		}
 	}
 }
@@ -93,13 +133,12 @@ $female-friend-heading-background: #b683ae;
 			cursor: pointer;
 			color: $filter-button-background-hover;
 		}
-        &.checked{
-			color: $sort-button-background
+		&.checked {
+			color: $sort-button-background;
 		}
-
 	}
 	.radio-nav-input {
-        &:checked + .radio-nav-label{
+		&:checked + .radio-nav-label {
 			color: $filter-button-background-hover;
 		}
 	}

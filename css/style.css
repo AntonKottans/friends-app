@@ -2,9 +2,6 @@
   box-sizing: border-box; }
 
 .body {
-  background-color: lightgray; }
-
-.body {
   display: grid;
   grid-template: 100% / max-content 1fr;
   grid-gap: 10px;
@@ -33,13 +30,7 @@
     align-items: center; }
     .controls-layout-container .sort-menu-button {
       width: 50px;
-      height: 25px;
-      /* 			padding: 5px 10px;
-
-			.sort-icon {
-				width: 40px;
-				height: 20px;
-			} */ }
+      height: 25px; }
   .controls-layout-container .filter-menu {
     height: max-content;
     display: grid;
@@ -47,7 +38,6 @@
     grid-gap: 5px; }
     .controls-layout-container .filter-menu [class$="filter-container"] {
       padding: 10px;
-      /* border: 2px solid green; */
       display: grid;
       justify-items: center;
       grid-gap: 5px; }
@@ -72,10 +62,7 @@
   display: inline-grid;
   grid-auto-flow: row;
   grid-template: max-content/repeat(auto-fit, 200px);
-  grid-gap: 10px;
-  /*     :nth-child(n+1){
-        margin: 5px
-    } */ }
+  grid-gap: 10px; }
   .friends-container .friend-container.hidden {
     visibility: hidden;
     opacity: 0; }
@@ -107,50 +94,68 @@
   .radio-nav-container .radio-nav-input {
     display: none; }
 
-/* .body {
-	width: 100%;
-	.main {
-		width: max-content;
-		.friends-container {
-			width: max-content;
+.body {
+  background-color: #014546; }
 
-		}
-	}
-}
- */
 .controls-layout-container {
-  background-color: #88ccff;
+  background: url("../img/leaf.svg"), linear-gradient(#001d1e 0%, #014546 100%), #88ccff;
   border-radius: 10px; }
   .controls-layout-container .sort-menu_label {
-    color: white; }
+    color: #cccccc; }
   .controls-layout-container .sort-menu [id$="descending"] {
-    background: center/40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"), #ff4081; }
+    background: center/40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"), #014546; }
   .controls-layout-container .sort-menu [id$="ascending"] {
-    background: center/40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"), #ff4081; }
+    background: center/40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"), #014546; }
   .controls-layout-container .sort-menu-button {
     border: none;
     border-radius: 5px; }
     .controls-layout-container .sort-menu-button:hover {
       cursor: pointer;
-      background-color: #ff5495; }
+      background-color: #236768; }
     .controls-layout-container .sort-menu-button.selected {
       box-shadow: 0px 0px 10px #ff4081; }
-  .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label:hover {
-    cursor: pointer; }
-  .controls-layout-container .filter-menu .button-filter {
-    background-color: #3f51b5;
-    border: none;
-    border-radius: 5px;
-    color: white; }
-    .controls-layout-container .filter-menu .button-filter:hover {
-      cursor: pointer;
-      background-color: #5365c9; }
+  .controls-layout-container .filter-menu {
+    /*         .age-input{
+            -moz-appearance: textfield;
+            -webkit-appearance: textfield;
+            appearance: textfield;
+        } */ }
+    .controls-layout-container .filter-menu .age-input,
+    .controls-layout-container .filter-menu .name-input {
+      background-color: rgba(200, 200, 200, 0.5);
+      color: #cccccc;
+      font-weight: 600;
+      border-radius: 5px; }
+      .controls-layout-container .filter-menu .age-input:focus,
+      .controls-layout-container .filter-menu .name-input:focus {
+        outline: none; }
+    .controls-layout-container .filter-menu .age-input {
+      text-align: center; }
+    .controls-layout-container .filter-menu .sex-filter-container .radio-container .radio-sex-input {
+      opacity: 0.5; }
+    .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label {
+      color: #cccccc; }
+      .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label:hover {
+        cursor: pointer; }
+    .controls-layout-container .filter-menu input[type="number"]::-webkit-outer-spin-button,
+    .controls-layout-container .filter-menu input[type="number"]::-webkit-inner-spin-button {
+      display: none; }
+    .controls-layout-container .filter-menu .button-filter {
+      background-color: #014546;
+      border: none;
+      border-radius: 5px;
+      color: #cccccc;
+      letter-spacing: 0.05em; }
+      .controls-layout-container .filter-menu .button-filter:hover {
+        cursor: pointer;
+        background-color: #236768; }
 
 .friends-container .friend-container {
-  background-color: white;
+  background: linear-gradient(black 0%, #001d1e 10%, #014546 100%), white;
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: 2px 2px 5px gray; }
+  box-shadow: 2px 2px 5px #001d1e;
+  color: #cccccc; }
   .friends-container .friend-container [class$="-name"],
   .friends-container .friend-container .email {
     white-space: nowrap;
@@ -158,10 +163,6 @@
     text-overflow: ellipsis; }
   .friends-container .friend-container [class$="-name"] {
     font-size: 20px; }
-  .friends-container .friend-container .friend-male-name {
-    background-color: #46b6ac; }
-  .friends-container .friend-container .friend-female-name {
-    background-color: #b683ae; }
 
 .radio-nav-container .radio-nav-label {
   color: #3f51b5; }
