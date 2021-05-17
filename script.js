@@ -13,8 +13,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			},
 		}
 	}
-	const userStorage = userStorageCreator()
-
 	const filterCreator = () => {
 		let sortByAge = undefined
 		let sortByName = undefined
@@ -41,12 +39,54 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			},
 		}
 	}
-	const userFilter = filterCreator()
 	const compose = (...arrayOfFunctions) => {
 		return arrayOfFunctions.reduce((prev, func) => {
 			return func(prev)
 		}, undefined)
 	}
+	const getNearestNumbers = (
+		currentNumber = 1,
+		amountOfNumbersToReturn_odd = 1,
+		totalNumbers = 1
+	) => {
+		let centralNumber = parseInt(currentNumber)
+		let amountOfNumbers = parseInt(amountOfNumbersToReturn_odd)
+		if (!(amountOfNumbersToReturn_odd % 2)) amountOfNumbers -= 1
+		let numbersArr = [currentNumber]
+		if (
+			!(centralNumber === centralNumber) ||
+			!(amountOfNumbers === amountOfNumbers) ||
+			!(parseInt(totalNumbers) === parseInt(totalNumbers))
+		)
+			console.log("NaN in getNearestNumbers")
+
+		if (centralNumber - amountOfNumbers <= 0) {
+			numbersArr = new Array(amountOfNumbers).fill(undefined).map((elem, i) => i + 1)
+			console.log("first")
+		} else if (centralNumber + amountOfNumbers >= totalNumbers) {
+			numbersArr = new Array(totalNumbers)
+				.fill(undefined)
+				.map((elem, i) => i + 1)
+				.filter((elem) => elem >= totalNumbers - amountOfNumbers + 1)
+			console.log("second")
+		} else {
+			for (let i = Math.trunc((amountOfNumbers - 1) / 2); i >= 1; i--) {
+				numbersArr.push(centralNumber - i)
+				numbersArr.push(centralNumber + i)
+			}
+			console.log("third")
+		}
+		return numbersArr.sort((a, b) => a - b)
+	}
+
+	console.log(getNearestNumbers(1, 10, 50))
+	console.log(getNearestNumbers(15, 10, 50))
+	console.log(getNearestNumbers(45, 10, 50))
+	console.log(getNearestNumbers(5, 1, 25))
+
+	const userStorage = userStorageCreator()
+	const userFilter = filterCreator()
+
 	const showPage = (pageNumber, amountOfFriends, totalPages = 1, filteredStorage) => {
 		const createPagesNavigation = () => {
 			const createContainer = () => {
@@ -60,13 +100,32 @@ document.addEventListener("DOMContentLoaded", (event) => {
 					.map((none) => document.createElement("label"))
 					.map((labelNode, i) => {
 						labelNode.setAttribute("for", `radio-${i + 1}`)
-						labelNode.classList.add(`radio-nav-label`)
+						labelNode.classList.add(`radio-nav-label`, "hidden-page-number")
 
 						if (i + 1 === pageNumber) labelNode.classList.add("checked")
 						labelNode.innerText = i + 1
 						return labelNode
 					})
 					.forEach((labelNode) => container.appendChild(labelNode))
+				return container
+			}
+			const addThreeDots = (container) => {
+				//debugger
+				let pagesInRow = 10
+				if (totalPages <= pagesInRow) return container
+
+				let dots = [document.createElement("span"), document.createElement("span")]
+				dots.forEach((node) => {
+					node.textContent = "..."
+					node.classList.add("pagination-dots", "hidden")
+				})
+				dots[0].classList.add("left-dots")
+				dots[1].classList.add("right-dots")
+				//debugger
+
+				container.insertBefore(dots[0], container.childNodes[1])
+				container.insertBefore(dots[1], container.childNodes[10])
+				console.log(JSON.stringify(container))
 				return container
 			}
 			const addInputs = (container) => {
@@ -85,19 +144,58 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			}
 			const addEvent = (container) => {
 				container.addEventListener("click", ({ target }) => {
+                    const getLablesToShow = (totalNumbers = 5) => {
+                        let amountOfRadioLabels = document.querySelectorAll(".radio-nav-label").length
+						let dotsFlags = [false, false]
+						let pageNumberArr = getNearestNumbers(
+							target.getAttribute("id").slice(6),
+							totalNumbers,
+							amountOfRadioLabels
+						)
+						//debugger
+						if (pageNumberArr[0] === 1) {
+							dotsFlags[1] = true
+						} else if (pageNumberArr[pageNumberArr.length - 1] === amountOfRadioLabels)
+							dotsFlags[0] = true
+						else if (totalNumbers < amountOfRadioLabels) dotsFlags = [true, true]
+
+						return [pageNumberArr, dotsFlags]
+					}
 					if (target.matches(".radio-nav-input")) {
-						document
+                        console.log(target.getAttribute("id"))
+                        let togglePaginationLabel = ()=>{
+                            document
 							.querySelectorAll(`.radio-nav-label`)
 							.forEach((node) => node.classList.remove("checked"))
 						document
 							.querySelector(`[for=${target.getAttribute("id")}]`)
 							.classList.add("checked")
+                        }
+                        let updatePaginationLables = ()=>{
+                            if (document.querySelectorAll(`.radio-nav-label`).length > 9) {
+                                let lablesToShow = getLablesToShow(9)
+                                document.querySelectorAll(".radio-nav-label").forEach((labelNode) => {
+                                    if (lablesToShow[0].includes(+labelNode.textContent))
+                                        labelNode.classList.remove("hidden-page-number")
+                                })
+                                if(!document.querySelector(".right-dots"))
+                                    console.log(document.querySelectorAll(".radio-nav-container"))
+                                if (lablesToShow[1][0])
+                                    document.querySelector(".left-dots").classList.remove("hidden")
+                                if (lablesToShow[1][1])
+                                    document.querySelector(".right-dots").classList.remove("hidden")
+                            }
+                        }
+                        togglePaginationLabel()
+                        //debugger
+                        updatePaginationLables()
+                        //debugger
 						updateContentAccordingToActiveFilters(+target.getAttribute("id").slice(6))
 					}
 				})
 				return container
 			}
-			return compose(createContainer, addLabels, addInputs, addEvent)
+			return compose(createContainer, addLabels, addThreeDots, addInputs, addEvent)
 		}
 		const createFragmentFromUsers = () => {
 			let fragment = document.createDocumentFragment()
@@ -115,6 +213,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 				.querySelector(".radio-nav-container")
 				.replaceWith(createPagesNavigation(totalPages))
 		else document.querySelector(".main").appendChild(createPagesNavigation(totalPages))
+
+		/* onclick({target:document.querySelector('#radio-1')}) */
 
 		setTimeout(() => {
 			document
@@ -277,7 +377,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	const downloadFriends = async (amountPerPage = 10) => {
 		await downloadUsers({ page: 5, seed: "google", result: amountPerPage })
 
-		updateContentAccordingToActiveFilters()
+		await updateContentAccordingToActiveFilters()
+
+        if(!document.querySelector("[for='radio-1']"))
+            debugger
+		document.querySelector("[for='radio-1']").click()
 	}
 	downloadFriends()
 

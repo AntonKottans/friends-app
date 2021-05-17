@@ -111,9 +111,17 @@
 	display: inline-flex;
 	width: 100%;
 	justify-content: center;
+    .pagination-dots{
+        &.hidden{
+            display: none;
+        }
+    }
 	.radio-nav-label {
 		padding: 2px 5px;
 		font-size: 24px;
+        &.hidden-page-number{
+            display:none;
+        }
 	}
 	.radio-nav-input {
 		display: none;
