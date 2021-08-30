@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", (event) => {
-	const userStorageCreator = () => {
+	let userStorageCreator = () => {
 		let userDB = []
 		return {
 			addUser: (user) => {
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			},
 		}
 	}
-	const filterCreator = () => {
+	let filterCreator = () => {
 		let sortByAge = undefined
 		let sortByName = undefined
 		let ageFilterRange = []
@@ -39,12 +39,36 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			},
 		}
 	}
-	const compose = (...arrayOfFunctions) => {
-		return arrayOfFunctions.reduce((prev, func) => {
-			return func(prev)
-		}, undefined)
+	let cardSizeCreator = () => {
+		let width = 216
+		let height = 268
+		return {
+			getWidth: () => width,
+			getHeight: () => height,
+		}
 	}
-	const getNearestIntegers = (
+	let pipe = (...arrayOfFunctions) => {
+		/*return arrayOfFunctions.reduce((prev, func) => {
+			return func(prev)
+		}, undefined) */
+		if (arrayOfFunctions.length === 0) return undefined
+		else if (arrayOfFunctions.length === 1) return arrayOfFunctions[0]()
+		return arrayOfFunctions.reduceRight((recur, func) => (...args) => recur(func(...args)))()
+	}
+	let calcPagesAmount = (
+		containerHeight,
+		containerWidth,
+		width = 210,
+		height = 300,
+		amountOfElements
+	) => {
+		let columns = Math.trunc(containerWidth / width) || 1
+		let rows = Math.trunc(containerHeight / height) || 1
+		let amountPerPage = columns * rows
+		let amountOfPages = Math.ceil(amountOfElements / amountPerPage)
+		return [amountPerPage, amountOfPages]
+	}
+	let getNearestIntegers = (
 		currentNumber = 1,
 		amountOfNumbersToReturn_odd = 1,
 		totalNumbers = 1
@@ -75,52 +99,65 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}
 		return numbersArr.sort((a, b) => a - b)
 	}
+	let logCallWrapper = (func) => {
+		return (...args) => {
+			console.log(`call: ${func.name}`)
+			let result = func(...args)
+			console.log(`return: ${func.name}`)
+			console.log(`result: ${result}`)
+			return result
+		}
+	}
+	//pipe = logCallWrapper(pipe)
 
-	const userStorage = userStorageCreator()
-	const userFilter = filterCreator()
+	let userStorage = userStorageCreator()
+	let userFilter = filterCreator()
+	let cardSize = cardSizeCreator()
 
-	const showPage = (pageNumber, amountOfFriends, totalPages = 1, filteredStorage) => {
+	let createAndShowPage = (pageNumber, amountOfFriends, totalPages = 1, filteredStorage) => {
 		let showPaginationLablesAndDots = (container) => {
+			let lablesToShow = getLablesToShow(container, 9, pageNumber)
+			container.querySelectorAll(".radio-nav-label").forEach((labelNode) => {
+				if (lablesToShow[0].includes(+labelNode.textContent))
+					labelNode.classList.remove("hidden-page-number")
+			})
+			container
+				.querySelector(".radio-nav-label:first-of-type")
+				.classList.remove("hidden-page-number")
+			container
+				.querySelector(".radio-nav-label:last-of-type")
+				.classList.remove("hidden-page-number")
 			if (container.querySelectorAll(`.radio-nav-label`).length > 9) {
-				let lablesToShow = getLablesToShow(container, 9, pageNumber)
-				container.querySelectorAll(".radio-nav-label").forEach((labelNode) => {
-					if (lablesToShow[0].includes(+labelNode.textContent))
-						labelNode.classList.remove("hidden-page-number")
-				})
-				container
-					.querySelector(".radio-nav-label:first-of-type")
-					.classList.remove("hidden-page-number")
-				container
-					.querySelector(".radio-nav-label:last-of-type")
-					.classList.remove("hidden-page-number")
 				if (lablesToShow[1][0])
 					container.querySelector(".left-dots").classList.remove("hidden")
 				if (lablesToShow[1][1])
 					container.querySelector(".right-dots").classList.remove("hidden")
 			}
 		}
-		const getLablesToShow = (navContainer, totalNumbers = 5, currentNumber) => {
+		showPaginationLablesAndDots = logCallWrapper(showPaginationLablesAndDots)
+		let getLablesToShow = (navContainer, totalNumbers = 5, currentNumber) => {
 			let amountOfRadioLabels = navContainer.querySelectorAll(".radio-nav-label").length
 			let dotsFlags = [false, false]
 			let pageNumberArr = getNearestIntegers(currentNumber, totalNumbers, amountOfRadioLabels)
-			if (pageNumberArr[0] === 1 || pageNumberArr[0] === 2) {
-				dotsFlags[1] = true
-			} else if (
-				pageNumberArr[pageNumberArr.length - 1] === amountOfRadioLabels ||
-				pageNumberArr[pageNumberArr.length - 1] === amountOfRadioLabels - 1
-			)
-				dotsFlags[0] = true
-			else if (totalNumbers < amountOfRadioLabels - 2) dotsFlags = [true, true]
+			if (pageNumberArr.length + 1 !== amountOfRadioLabels)
+				if (pageNumberArr[0] === 1 || pageNumberArr[0] === 2) {
+					dotsFlags[1] = true
+				} else if (
+					pageNumberArr[pageNumberArr.length - 1] === amountOfRadioLabels ||
+					pageNumberArr[pageNumberArr.length - 1] === amountOfRadioLabels - 1
+				)
+					dotsFlags[0] = true
+				else if (totalNumbers < amountOfRadioLabels - 2) dotsFlags = [true, true]
 
 			return [pageNumberArr, dotsFlags]
 		}
-		const createPagesNavigation = () => {
-			const createContainer = () => {
+		let createPagesNavigation = () => {
+			let createContainer = () => {
 				let radioContainerNode = document.createElement("div")
 				radioContainerNode.classList.add("radio-nav-container")
 				return radioContainerNode
 			}
-			const addLabels = (container) => {
+			let addLabels = (container) => {
 				let labelArr = new Array(totalPages).fill(undefined)
 				labelArr = labelArr
 					.map((none) => document.createElement("label"))
@@ -135,7 +172,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 					.forEach((labelNode) => container.appendChild(labelNode))
 				return container
 			}
-			const addThreeDots = (container) => {
+			let addThreeDots = (container) => {
 				let dots = [document.createElement("span"), document.createElement("span")]
 				dots.forEach((node) => {
 					node.textContent = "..."
@@ -150,7 +187,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 				)
 				return container
 			}
-			const addInputs = (container) => {
+			let addInputs = (container) => {
 				let radioArr = new Array(totalPages).fill(undefined)
 				radioArr = radioArr
 					.map((none) => document.createElement("input"))
@@ -164,7 +201,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 					.forEach((radioNode) => container.appendChild(radioNode))
 				return container
 			}
-			const addEvent = (container) => {
+			let addEvent = (container) => {
 				container.addEventListener("click", ({ target }) => {
 					if (target.matches(".radio-nav-input")) {
 						let togglePaginationLabel = () => {
@@ -184,12 +221,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 				})
 				return container
 			}
-			const setCheckedFirstRadio = (container) => {
+			let setCheckedFirstRadio = (container) => {
+				//debugger
 				container.querySelector(`input:first-of-type`).checked = true
 				showPaginationLablesAndDots(container)
+
 				return container
 			}
-			return compose(
+			return pipe(
 				createContainer,
 				addLabels,
 				addThreeDots,
@@ -198,7 +237,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 				setCheckedFirstRadio
 			)
 		}
-		const createFragmentFromUsers = () => {
+		let createFragmentFromUsers = () => {
+			//debugger
 			let fragment = document.createDocumentFragment()
 			filteredStorage
 				.slice(amountOfFriends * (pageNumber - 1), amountOfFriends * pageNumber)
@@ -208,7 +248,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		document.querySelector(".friends-container").innerHTML = ""
 		let fragment = createFragmentFromUsers()
 		document.querySelector(".friends-container").appendChild(fragment)
-
 		if (document.querySelector(".radio-nav-container"))
 			document
 				.querySelector(".radio-nav-container")
@@ -224,7 +263,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}, 0)
 	}
 
-	const getUserData = async (url = "https://randomuser.me/api/") => {
+	let getUserData = async (url = "https://randomuser.me/api/") => {
 		let response = await fetch(url)
 		if (response.ok) {
 			let json = await response.json()
@@ -233,8 +272,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			return response.status
 		}
 	}
-	const downloadUsers = async ({ page = 1, seed = "google", result = 1 }) => {
-		const userFieldsList = ["name", "dob", "email", "cell", "id", "gender", "picture"]
+	let downloadUsers = async ({ page = 1, seed = "google", result = 1 }) => {
+		let userFieldsList = ["name", "dob", "email", "cell", "id", "gender", "picture"]
 
 		userStorage.clearUsers()
 
@@ -246,14 +285,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}
 	}
 
-	const createFriendCard = (user) => {
-		const createFriendContainer = () => {
+	let createFriendCard = (user) => {
+		let createFriendContainer = () => {
 			let friend = document.createElement("div")
 			friend.classList.add("friend-container", "hidden")
 
 			return friend
 		}
-		const addName = (friend) => {
+		let addName = (friend) => {
 			let friendName = document.createElement("span")
 			friendName.classList.add(
 				user.gender === "male" ? "friend-male-name" : "friend-female-name"
@@ -262,57 +301,57 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			friend.appendChild(friendName)
 			return friend
 		}
-		const addPortrait = (friend) => {
+		let addPortrait = (friend) => {
 			let friendPortrait = document.createElement("img")
 			friendPortrait.setAttribute("src", user.picture.large)
 			friendPortrait.setAttribute("alt", "random user")
 			friend.appendChild(friendPortrait)
 			return friend
 		}
-		const addDOB = (friend) => {
+		let addDOB = (friend) => {
 			let friendDOB = document.createElement("span")
 			friendDOB.textContent = `I am ${user.dob.age} years old.`
 			friend.appendChild(friendDOB)
 			return friend
 		}
-		const addEmail = (friend) => {
+		let addEmail = (friend) => {
 			let friendEmail = document.createElement("span")
 			friendEmail.textContent = user.email
 			friendEmail.classList.add("email")
 			friend.appendChild(friendEmail)
 			return friend
 		}
-		const addCell = (friend) => {
+		let addCell = (friend) => {
 			let friendCell = document.createElement("span")
 			friendCell.textContent = user.cell
 			friend.appendChild(friendCell)
 			return friend
 		}
-		const addNick = (friend) => {
+		/* 		let addNick = (friend) => {
 			let friendNick = document.createElement("span")
 			friendNick.textContent = user.id.name === "" ? "no id" : user.id.name
 			friend.appendChild(friendNick)
 			return friend
-		}
-		const addGender = (friend) => {
+		} */
+		let addGender = (friend) => {
 			let friendGender = document.createElement("span")
 			friendGender.textContent = user.gender.toUpperCase()
 			friend.appendChild(friendGender)
 			return friend
 		}
-		return compose(
+		return pipe(
 			createFriendContainer,
 			addName,
 			addPortrait,
 			addDOB,
 			addEmail,
 			addCell,
-			addNick,
+			//addNick,
 			addGender
 		)
 	}
-
-	const getFilteredStorage = (filter = userFilter) => {
+	//createFriendCard = logCallWrapper(createFriendCard)
+	let getFilteredStorage = (filter = userFilter) => {
 		let filteredUserStorage = userStorage.getUsers()
 		if (filter.getAgeFilterRange().length !== 0)
 			filteredUserStorage = filteredUserStorage.filter(
@@ -357,31 +396,27 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 		return filteredUserStorage
 	}
-	const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
+	let updateContentAccordingToActiveFilters = (pageNumber = 1) => {
 		let filteredUserStorage = getFilteredStorage()
-		const calcPagesAmount = (filteredListOfFriends) => {
-			let asideWidth = 210
-			let columns = Math.trunc(
-				(document.querySelector(".body").clientWidth - asideWidth) / 220
-			)
-			let rows = Math.trunc(document.querySelector(".friends-container").clientHeight / 300)
 
-			let amountPerPage = columns * rows
-
-			let amountOfPages = Math.ceil(filteredListOfFriends.length / amountPerPage)
-			return [amountPerPage, amountOfPages]
-		}
-		let [amountOfFriendsPerPage, totalPages] = calcPagesAmount(filteredUserStorage)
-		showPage(pageNumber, amountOfFriendsPerPage, totalPages, filteredUserStorage)
+		let [amountOfFriendsPerPage, totalPages] = calcPagesAmount(
+			document.querySelector(".friends-container").clientHeight,
+			document.querySelector(".body").clientWidth - 210,
+            //todo aside size must be considered in Media
+			cardSize.getWidth(),
+			cardSize.getHeight(),
+			filteredUserStorage.length
+		)
+		createAndShowPage(pageNumber, amountOfFriendsPerPage, totalPages, filteredUserStorage)
 	}
-	const downloadFriends = async (amountPerPage = 10) => {
+	let downloadFriends = async (amountPerPage = 10) => {
 		await downloadUsers({ page: 5, seed: "google", result: amountPerPage })
 
 		await updateContentAccordingToActiveFilters()
 	}
 	downloadFriends()
 
-	const addEventListeners = () => {
+	let addEventListeners = () => {
 		document.querySelector(".sort-menu").addEventListener("click", ({ target }) => {
 			if (target.matches(".sort-menu-button")) {
 				document
@@ -390,7 +425,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 				target.classList.add("selected")
 			}
 		})
-
+        document.querySelector('#confirm').addEventListener('click',(event)=>{
+            document.querySelector('#burger-checkbox').checked=false
+        })
 		document.querySelector("#name-input").addEventListener("keypress", (event) => {
 			return (
 				(event.charCode >= 65 && event.charCode <= 90) ||
@@ -434,6 +471,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 			if (event.target.matches("button")) updateContentAccordingToActiveFilters()
 		})
+		;(() => {
+			window.addEventListener("resize", resizeThrottler, false)
+
+			let resizeTimeout
+			function resizeThrottler() {
+				if (!resizeTimeout) {
+					resizeTimeout = setTimeout(function () {
+						resizeTimeout = null
+						actualResizeHandler()
+
+						// The actualResizeHandler will execute at a rate of 15fps
+					}, 66)
+				}
+			}
+
+			function actualResizeHandler() {
+				updateContentAccordingToActiveFilters()
+			}
+		})()
 	}
 	addEventListeners()
 })

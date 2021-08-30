@@ -11,13 +11,17 @@ $light-gradient-color: #014546;
 $light-gradient-color-hover: #236768;
 $text-color: #cccccc;
 $inputs-background-color: rgba(200, 200, 200, 0.5);
+$radio-pagination-color: #62BA85;
+$radio-pagination-color-checked: #a6fec9;
+$radio-pagination-background-color-checked: #003435;
+$radio-pagination-color-hover: #84dca7;
 
 .body {
 	background-color: $body-background;
 }
 
 .controls-layout-container {
-	background: url("../img/leaf.svg"),
+	background: no-repeat url("../img/leaf.svg"),
 		linear-gradient($dark-gradient-color 0%, $light-gradient-color 100%), $menu-background;
 	border-radius: 10px;
 
@@ -133,21 +137,18 @@ $inputs-background-color: rgba(200, 200, 200, 0.5);
 }
 .radio-nav-container {
     .pagination-dots{
-        
+        color: $radio-pagination-color;
     }
 	.radio-nav-label {
-		color: $filter-button-background;
+        border-radius: 5px;
+		color: $radio-pagination-color;
 		&:hover {
 			cursor: pointer;
-			color: $filter-button-background-hover;
+			color: $radio-pagination-color-hover;
 		}
 		&.checked {
-			color: $sort-button-background;
-		}
-	}
-	.radio-nav-input {
-		&:checked + .radio-nav-label {
-			color: $filter-button-background-hover;
+			background-color: $radio-pagination-background-color-checked;
+            font-weight: 600;
 		}
 	}
 }
