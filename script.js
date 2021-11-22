@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}
 	}
 	let cardSizeCreator = () => {
-		let width = 216
+		let width = 200
 		let height = 268
 		return {
 			getWidth: () => width,
@@ -59,13 +59,28 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		containerHeight,
 		containerWidth,
 		width = 210,
-		height = 300,
-		amountOfElements
-	) => {
+		height = 278,
+		amountOfElements,
+        gridGap = 10
+	) => {  
 		let columns = Math.trunc(containerWidth / width) || 1
+        if(containerWidth%width <= gridGap*(columns-1))
+            columns--
 		let rows = Math.trunc(containerHeight / height) || 1
+        if(containerHeight%height <= gridGap*(rows-1))
+            rows--
 		let amountPerPage = columns * rows
 		let amountOfPages = Math.ceil(amountOfElements / amountPerPage)
+        //if(amountPerPage===4)
+            console.log('amountPerPage===4',containerHeight,
+                containerWidth,
+                width,
+                height,
+                amountOfElements,
+                'amountPerPage',
+                amountPerPage,
+                'amountOfPages',
+                amountOfPages)
 		return [amountPerPage, amountOfPages]
 	}
 	let getNearestIntegers = (
@@ -121,12 +136,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 				if (lablesToShow[0].includes(+labelNode.textContent))
 					labelNode.classList.remove("hidden-page-number")
 			})
-			container
-				.querySelector(".radio-nav-label:first-of-type")
-				.classList.remove("hidden-page-number")
-			container
-				.querySelector(".radio-nav-label:last-of-type")
-				.classList.remove("hidden-page-number")
+            if(container.querySelector(".radio-nav-label:first-of-type")!==null){
+                container
+                    .querySelector(".radio-nav-label:first-of-type")
+                    .classList.remove("hidden-page-number")
+                container
+                    .querySelector(".radio-nav-label:last-of-type")
+                    .classList.remove("hidden-page-number")
+            }
 			if (container.querySelectorAll(`.radio-nav-label`).length > 9) {
 				if (lablesToShow[1][0])
 					container.querySelector(".left-dots").classList.remove("hidden")
@@ -223,7 +240,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			}
 			let setCheckedFirstRadio = (container) => {
 				//debugger
-				container.querySelector(`input:first-of-type`).checked = true
+                if(container.querySelector(`input:first-of-type`)!==null)
+				    container.querySelector(`input:first-of-type`).checked = true
 				showPaginationLablesAndDots(container)
 
 				return container
@@ -401,7 +419,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 		let [amountOfFriendsPerPage, totalPages] = calcPagesAmount(
 			document.querySelector(".friends-container").clientHeight,
-			document.querySelector(".body").clientWidth - 210,
+			document.querySelector('.friends-container').clientWidth,//(".body").clientWidth - 210,
             //todo aside size must be considered in Media
 			cardSize.getWidth(),
 			cardSize.getHeight(),

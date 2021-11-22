@@ -8,7 +8,7 @@
   height: 100vh;
   margin: 0px;
   padding: 10px;
-  min-width: max-content;
+  min-width: 360px;
   overflow: hidden; }
   .body .main {
     width: 100%;
@@ -161,6 +161,18 @@
 
 .body {
   background-color: #014546; }
+
+.label-open-filters {
+  color: #62BA85;
+  background: #003435;
+  width: max-content;
+  margin: auto;
+  border-radius: 10px;
+  padding: 5px;
+  letter-spacing: 0.15em; }
+  .label-open-filters:hover {
+    color: #84dca7;
+    cursor: pointer; }
 
 .controls-layout-container {
   background: no-repeat url("../img/leaf.svg"), linear-gradient(#001d1e 0%, #014546 100%), #88ccff;

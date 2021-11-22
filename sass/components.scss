@@ -20,6 +20,21 @@ $radio-pagination-color-hover: #84dca7;
 	background-color: $body-background;
 }
 
+.label-open-filters{
+    color: $radio-pagination-color;
+    background: $radio-pagination-background-color-checked;
+    width: max-content;
+    margin: auto;
+    border-radius: 10px;
+    padding: 5px;
+    letter-spacing: 0.15em;
+    &:hover{
+        color: $radio-pagination-color-hover;
+        //font-weight: 900;
+        cursor: pointer;
+    }
+}
+
 .controls-layout-container {
 	background: no-repeat url("../img/leaf.svg"),
 		linear-gradient($dark-gradient-color 0%, $light-gradient-color 100%), $menu-background;
