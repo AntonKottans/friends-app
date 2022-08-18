@@ -62,7 +62,7 @@
       align-items: center; }
       .controls-layout-container .filter-menu .age-filter-container .age-input {
         width: 50px; }
-      .controls-layout-container .filter-menu .age-filter-container .button-filter {
+      .controls-layout-container .filter-menu .age-filter-container .age-filter-instruction {
         grid-area: 2/1/3/3; }
     .controls-layout-container .filter-menu .button-filter {
       width: max-content;
@@ -209,7 +209,9 @@
     .controls-layout-container .filter-menu .age-input:focus,
     .controls-layout-container .filter-menu .name-input:focus {
       outline: none; }
-  .controls-layout-container .filter-menu .name-filter-instruction {
+  .controls-layout-container .filter-menu .name-filter-instruction,
+  .controls-layout-container .filter-menu .age-filter-instruction,
+  .controls-layout-container .filter-menu .sex-filter-instruction {
     color: #cccccc;
     user-select: none; }
   .controls-layout-container .filter-menu .age-input {

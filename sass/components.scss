@@ -90,7 +90,9 @@ $radio-pagination-color-hover: #84dca7;
             }
         }
 
-        .name-filter-instruction {
+        .name-filter-instruction,
+        .age-filter-instruction,
+        .sex-filter-instruction {
             color: $text-color;
             user-select: none;
         }

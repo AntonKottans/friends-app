@@ -25,39 +25,23 @@ const userStorageCreator = () => {
 const userStorage = userStorageCreator();
 
 const userFilter = {
-    /*     let sortByAge = null;
-    let sortByName = null;
-    let ageFilterRange = [];
-    let nameFilter = "";
-    let sexFilter = "all"; */
-    /*    return {
-         setSortByAge: (param) => (sortByAge = param),
-        getSortByAge: () => sortByAge,
-        setSortByName: (param) => (sortByName = param),
-        getSortByName: () => sortByName,
-        setAgeFilterRange: (param) => (ageFilterRange = param),
-        getAgeFilterRange: () => ageFilterRange,
-        setNameFilter: (param) => (nameFilter = param),
-        getNameFilter: () => nameFilter,
-        setSexFilter: (param) => (sexFilter = param),
-        getSexFilter: () => sexFilter, */
-
+    MIN_AGE: 0,
+    MAX_AGE: 200,
     sortByAge: null,
     sortByName: null,
-    ageFilterRange: null,
+    ageFilterRange: {},
     nameFilter: "",
     sexFilter: "all",
 
-    reset: () => {
-        userFilter.sortByAge = null;
-        userFilter.sortByName = null;
-        userFilter.ageFilterRange = null;
-        userFilter.nameFilter = "";
-        userFilter.sexFilter = "all";
+    reset: function(){
+        this.sortByAge = null;
+        this.sortByName = null;
+        this.ageFilterRange = {min:this.MIN_AGE,max:this.MAX_AGE};
+        this.nameFilter = "";
+        this.sexFilter = "all";
     },
-    // };
 };
-//const userFilter = filterCreator();
+userFilter.reset()
 
 const cardSize = {
     width: 200,
@@ -337,7 +321,7 @@ const downloadUsers = async ({ page = 1, seed = "google", result = 1 }) => {
         const users = await getUserData(
             `https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}`
         );
-        userStorage.addUsers(users.results); //forEach((user) => userStorage.addUsers([user]));
+        userStorage.addUsers(users.results);
     }
 };
 
@@ -410,7 +394,7 @@ let createFriendCard = (user) => {
 
 const getFilteredStorage = (filter = userFilter) => {
     let filteredUserStorage = userStorage.getUsers();
-    if (filter.ageFilterRange)
+    if (filter.ageFilterRange.max - filter.ageFilterRange.min >= 0 )
         filteredUserStorage = filteredUserStorage.filter(
             (user) =>
                 user.dob.age >= filter.ageFilterRange.min &&
@@ -458,6 +442,7 @@ const getFilteredStorage = (filter = userFilter) => {
 };
 
 const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
+    console.log(userFilter.ageFilterRange)
     const filteredUserStorage = getFilteredStorage();
     const { amountPerPage: amountOfFriendsPerPage, amountOfPages: totalPages } =
         calcPagesAmount(
@@ -504,11 +489,24 @@ const addEventListeners = () => {
         userFilter.nameFilter = document.querySelector("#name-input").value;
         updateContentAccordingToActiveFilters();
     });
+
+    document.querySelector('.age-filter-container').addEventListener('input',({target})=>{
+        if(target.matches('.age-input')){
+            if(target.getAttribute('id')==='start-age')
+                userFilter.ageFilterRange.min = target.value?+target.value:userFilter.MIN_AGE
+            else if(target.getAttribute('id')==='end-age')
+                userFilter.ageFilterRange.max = target.value?+target.value:userFilter.MAX_AGE
+                console.log(userFilter.ageFilterRange);
+            updateContentAccordingToActiveFilters()
+        }
+
+    })
+    
     document
         .querySelector(".controls-layout-container")
         .addEventListener("click", (event) => {
             if (event.target.matches("button")) event.preventDefault();
-
+            
             let id = event.target.getAttribute("id");
             if (id === "age-ascending")
                 (userFilter.sortByAge = "ascending"),
@@ -522,18 +520,10 @@ const addEventListeners = () => {
             else if (id === "name-descending")
                 (userFilter.sortByName = "descending"),
                     (userFilter.sortByAge = null);
-            else if (id === "filter-by-age") {
-                const min = document.querySelector("#start-age").value;
-                const max = document.querySelector("#end-age").value;
-                if (min > 0 || max > 0)
-                    userFilter.ageFilterRange = {
-                        min: min || 0,
-                        max: max || 0,
-                    };
-            } else if (id === "filter-by-sex")
-                userFilter.sexFilter = document
-                    .querySelector("[name=radiobutton-sex]:checked")
-                    .getAttribute("id");
+            else if(['all','male','female'].includes(id)){
+                userFilter.sexFilter = id
+                updateContentAccordingToActiveFilters();
+            }
             else if (id === "reset")
                 userFilter.reset(),
                     document
