@@ -8,6 +8,8 @@ const pipe = (...arrayOfFunctions) => {
     )();
 };
 
+let containerForFriends;
+
 const userStorageCreator = () => {
     let userDB = [];
     return {
@@ -33,15 +35,15 @@ const userFilter = {
     nameFilter: "",
     sexFilter: "all",
 
-    reset: function(){
+    reset: function () {
         this.sortByAge = null;
         this.sortByName = null;
-        this.ageFilterRange = {min:this.MIN_AGE,max:this.MAX_AGE};
+        this.ageFilterRange = { min: this.MIN_AGE, max: this.MAX_AGE };
         this.nameFilter = "";
         this.sexFilter = "all";
     },
 };
-userFilter.reset()
+userFilter.reset();
 
 const cardSize = {
     width: 200,
@@ -272,9 +274,9 @@ const createAndShowPage = (
         return fragment;
     };
 
-    document.querySelector(".friends-container").innerHTML = "";
+    containerForFriends.innerHTML = "";
     const fragment = createFragmentFromUsers();
-    document.querySelector(".friends-container").appendChild(fragment);
+    containerForFriends.appendChild(fragment);
     if (document.querySelector(".radio-nav-container"))
         document
             .querySelector(".radio-nav-container")
@@ -286,25 +288,27 @@ const createAndShowPage = (
     }
 
     setTimeout(() => {
-        document
-            .querySelector(".friends-container")
-            .childNodes.forEach((friendToShow) =>
-                friendToShow.classList.remove("hidden")
-            );
+        containerForFriends.childNodes.forEach((friendToShow) =>
+            friendToShow.classList.remove("hidden")
+        );
     }, 0);
 };
 
-const getUserData = async (url = "https://randomuser.me/api/") => {
-    const response = await fetch(url);
-    if (response.ok) {
-        const json = await response.json();
-        return json;
-    } else {
-        return response.status;
-    }
+const doRecursiveFetch = (url, attempts) => {
+    console.log("attempts", attempts);
+    return fetch(url)
+        .then((response) => {
+            console.log(response.status);
+            if (response.ok) return response.json();
+        })
+        .catch(() => doRecursiveFetch(url, attempts - 1));
 };
 
-const downloadUsers = async ({ page = 1, seed = "google", result = 1 }) => {
+const getUserData = (url = "https://randomuser.me/api/", attempts = 5) => {
+    return doRecursiveFetch(url, attempts);
+};
+
+const downloadUsers = async ({ pages = 1, seed = "google", result = 1 }) => {
     const userFieldsList = [
         "name",
         "dob",
@@ -314,13 +318,31 @@ const downloadUsers = async ({ page = 1, seed = "google", result = 1 }) => {
         "gender",
         "picture",
     ];
+    let loadingProgressDots = [];
 
+    const placeLoadingIndicator = () => {
+        const loadingContainer = document.createElement("div");
+        loadingContainer.classList.add("loading-container");
+        const loadingText = document.createElement("span");
+        loadingText.classList.add("loading-text");
+        loadingProgressDots = [...new Array(pages)].map((_, i) => {
+            const dot = document.createElement("div");
+            dot.classList.add("in-progress", "loading-dot");
+            return dot;
+        });
+        loadingContainer.append(loadingText, ...loadingProgressDots);
+        containerForFriends.appendChild(loadingContainer);
+    };
+
+    placeLoadingIndicator();
     userStorage.clearUsers();
 
-    for (let i = 1; i <= page; i++) {
+    for (let i = 1; i <= pages; i++) {
+        console.log(i);
         const users = await getUserData(
             `https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}`
         );
+        loadingProgressDots[i - 1].classList.remove("in-progress");
         userStorage.addUsers(users.results);
     }
 };
@@ -335,9 +357,9 @@ let createFriendCard = (user) => {
 
     const addName = (friend) => {
         const friendName = document.createElement("span");
-        friendName.classList.add(
+        /*         friendName.classList.add(
             user.gender === "male" ? "friend-male-name" : "friend-female-name"
-        );
+        ); */
         friendName.textContent = `${user.name.title}. ${user.name.first} ${user.name.last}`;
         friend.appendChild(friendName);
         return friend;
@@ -347,7 +369,7 @@ let createFriendCard = (user) => {
         const friendPortrait = document.createElement("img");
         friendPortrait.setAttribute("src", user.picture.large);
         friendPortrait.setAttribute("alt", "random user");
-        friendPortrait.classList.add('portrait')
+        friendPortrait.classList.add("portrait");
         friend.appendChild(friendPortrait);
         return friend;
     };
@@ -394,7 +416,7 @@ let createFriendCard = (user) => {
 
 const getFilteredStorage = (filter = userFilter) => {
     let filteredUserStorage = userStorage.getUsers();
-    if (filter.ageFilterRange.max - filter.ageFilterRange.min >= 0 )
+    if (filter.ageFilterRange.max - filter.ageFilterRange.min >= 0)
         filteredUserStorage = filteredUserStorage.filter(
             (user) =>
                 user.dob.age >= filter.ageFilterRange.min &&
@@ -442,12 +464,11 @@ const getFilteredStorage = (filter = userFilter) => {
 };
 
 const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
-    console.log(userFilter.ageFilterRange)
     const filteredUserStorage = getFilteredStorage();
     const { amountPerPage: amountOfFriendsPerPage, amountOfPages: totalPages } =
         calcPagesAmount(
-            document.querySelector(".friends-container").clientHeight,
-            document.querySelector(".friends-container").clientWidth,
+            containerForFriends.clientHeight,
+            containerForFriends.clientWidth,
             filteredUserStorage.length
         );
     createAndShowPage(
@@ -459,8 +480,10 @@ const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
 };
 
 const downloadFriends = (amountPerPage = 10) => {
-    downloadUsers({ page: 5, seed: "google", result: amountPerPage }).then(() =>
-        updateContentAccordingToActiveFilters()
+    downloadUsers({ pages: 5, seed: "google", result: amountPerPage }).then(
+        () => {
+            updateContentAccordingToActiveFilters();
+        }
     );
 };
 
@@ -490,23 +513,27 @@ const addEventListeners = () => {
         updateContentAccordingToActiveFilters();
     });
 
-    document.querySelector('.age-filter-container').addEventListener('input',({target})=>{
-        if(target.matches('.age-input')){
-            if(target.getAttribute('id')==='start-age')
-                userFilter.ageFilterRange.min = target.value?+target.value:userFilter.MIN_AGE
-            else if(target.getAttribute('id')==='end-age')
-                userFilter.ageFilterRange.max = target.value?+target.value:userFilter.MAX_AGE
-                console.log(userFilter.ageFilterRange);
-            updateContentAccordingToActiveFilters()
-        }
+    document
+        .querySelector(".age-filter-container")
+        .addEventListener("input", ({ target }) => {
+            if (target.matches(".age-input")) {
+                if (target.getAttribute("id") === "start-age")
+                    userFilter.ageFilterRange.min = target.value
+                        ? +target.value
+                        : userFilter.MIN_AGE;
+                else if (target.getAttribute("id") === "end-age")
+                    userFilter.ageFilterRange.max = target.value
+                        ? +target.value
+                        : userFilter.MAX_AGE;
+                updateContentAccordingToActiveFilters();
+            }
+        });
 
-    })
-    
     document
         .querySelector(".controls-layout-container")
         .addEventListener("click", (event) => {
             if (event.target.matches("button")) event.preventDefault();
-            
+
             let id = event.target.getAttribute("id");
             if (id === "age-ascending")
                 (userFilter.sortByAge = "ascending"),
@@ -520,11 +547,10 @@ const addEventListeners = () => {
             else if (id === "name-descending")
                 (userFilter.sortByName = "descending"),
                     (userFilter.sortByAge = null);
-            else if(['all','male','female'].includes(id)){
-                userFilter.sexFilter = id
+            else if (["all", "male", "female"].includes(id)) {
+                userFilter.sexFilter = id;
                 updateContentAccordingToActiveFilters();
-            }
-            else if (id === "reset")
+            } else if (id === "reset")
                 userFilter.reset(),
                     document
                         .querySelectorAll(".sort-menu-button")
@@ -537,28 +563,23 @@ const addEventListeners = () => {
             if (event.target.matches("button"))
                 updateContentAccordingToActiveFilters();
         });
+    window.addEventListener("resize", resizeThrottler, false);
 };
 
-downloadFriends();
-
-document.addEventListener("DOMContentLoaded", (event) => {
+const resizeThrottler = (() => {
     let resizeTimeout;
-
-    function actualResizeHandler() {
-        updateContentAccordingToActiveFilters();
-    }
-
-    function resizeThrottler() {
+    return () => {
         if (!resizeTimeout) {
             resizeTimeout = setTimeout(function () {
                 resizeTimeout = null;
-                actualResizeHandler();
+                updateContentAccordingToActiveFilters();
             }, 66);
         }
-    }
+    };
+})();
 
-    window.addEventListener("resize", resizeThrottler, false);
+document.addEventListener("DOMContentLoaded", (event) => {
     addEventListeners();
+    containerForFriends = document.querySelector(".friends-container");
+    downloadFriends();
 });
-
-

@@ -3,8 +3,6 @@ $sort-button-background-hover: #ff5495;
 $filter-button-background-hover: #5365c9;
 $filter-button-background: #3f51b5;
 $menu-background: #88ccff;
-$male-friend-heading-background: #46b6ac;
-$female-friend-heading-background: #b683ae;
 $body-background: #014546;
 $dark-gradient-color: #001d1e;
 $light-gradient-color: #014546;
@@ -145,6 +143,19 @@ $radio-pagination-color-hover: #84dca7;
 
 .friends-container {
     overflow: hidden;
+
+    .loading-container{
+        .loading-text{
+            color: white;
+        }
+        .loading-dot{
+            background-color: $light-gradient-color;
+            &.in-progress{
+                background-color: $dark-gradient-color;
+            }
+        }
+    }
+
     .portrait {
         user-select: none;
         -webkit-user-drag: none;

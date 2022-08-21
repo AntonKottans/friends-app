@@ -1,0 +1,115 @@
+.body {
+  background-color: #014546; }
+
+.label-open-filters {
+  color: #62ba85;
+  background: #003435;
+  width: max-content;
+  margin: auto;
+  border-radius: 10px;
+  padding: 5px;
+  letter-spacing: 0.15em; }
+  .label-open-filters:hover {
+    color: #84dca7;
+    cursor: pointer; }
+
+.controls-layout-container {
+  background: no-repeat url("../img/leaf.svg"), linear-gradient(#001d1e 0%, #014546 100%), #88ccff;
+  border-radius: 10px; }
+  .controls-layout-container .sort-menu_label {
+    color: #cccccc;
+    user-select: none; }
+  .controls-layout-container .sort-menu [id$="descending"] {
+    background: center/40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"), #014546; }
+  .controls-layout-container .sort-menu [id$="ascending"] {
+    background: center/40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"), #014546; }
+  .controls-layout-container .sort-menu-button {
+    border: none;
+    border-radius: 5px; }
+    .controls-layout-container .sort-menu-button:hover {
+      cursor: pointer;
+      background-color: #236768; }
+    .controls-layout-container .sort-menu-button.selected {
+      box-shadow: 0px 0px 10px #ff4081; }
+  .controls-layout-container .filter-menu .age-input,
+  .controls-layout-container .filter-menu .name-input {
+    background-color: rgba(200, 200, 200, 0.5);
+    color: #cccccc;
+    font-weight: 600;
+    border: none;
+    border-radius: 3px; }
+    .controls-layout-container .filter-menu .age-input::placeholder,
+    .controls-layout-container .filter-menu .name-input::placeholder {
+      color: #cccccc; }
+    .controls-layout-container .filter-menu .age-input:focus,
+    .controls-layout-container .filter-menu .name-input:focus {
+      outline: none; }
+  .controls-layout-container .filter-menu .name-filter-instruction,
+  .controls-layout-container .filter-menu .age-filter-instruction,
+  .controls-layout-container .filter-menu .sex-filter-instruction {
+    color: #cccccc;
+    user-select: none; }
+  .controls-layout-container .filter-menu .age-input {
+    text-align: center; }
+  .controls-layout-container .filter-menu .sex-filter-container .radio-container .radio-sex-input {
+    opacity: 0.5; }
+  .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label {
+    color: #cccccc;
+    user-select: none; }
+    .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label:hover {
+      cursor: pointer; }
+  .controls-layout-container .filter-menu .age-input {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    appearance: textfield; }
+  .controls-layout-container .filter-menu .age-input::-webkit-outer-spin-button,
+  .controls-layout-container .filter-menu .age-input::-webkit-inner-spin-button {
+    display: none; }
+  .controls-layout-container .filter-menu .button-filter {
+    background-color: #014546;
+    border: none;
+    border-radius: 5px;
+    color: #cccccc;
+    letter-spacing: 0.05em;
+    user-select: none; }
+    .controls-layout-container .filter-menu .button-filter:hover {
+      cursor: pointer;
+      background-color: #236768; }
+
+.friends-container {
+  overflow: hidden; }
+  .friends-container .loading-container .loading-text {
+    color: white; }
+  .friends-container .loading-container .loading-dot {
+    background-color: #014546; }
+    .friends-container .loading-container .loading-dot.in-progress {
+      background-color: #001d1e; }
+  .friends-container .portrait {
+    user-select: none;
+    -webkit-user-drag: none; }
+  .friends-container .friend-container {
+    background: linear-gradient(black 0%, #001d1e 10%, #014546 100%), white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 2px 2px 5px #001d1e;
+    color: #cccccc; }
+    .friends-container .friend-container [class$="-name"],
+    .friends-container .friend-container .email {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+    .friends-container .friend-container [class$="-name"] {
+      font-size: 20px; }
+
+.radio-nav-container .pagination-dots {
+  color: #62ba85; }
+
+.radio-nav-container .radio-nav-label {
+  border-radius: 5px;
+  color: #62ba85; }
+  .radio-nav-container .radio-nav-label:hover {
+    cursor: pointer;
+    color: #84dca7; }
+  .radio-nav-container .radio-nav-label.checked {
+    background-color: #003435;
+    font-weight: 600; }

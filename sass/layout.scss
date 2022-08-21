@@ -102,6 +102,20 @@
     grid-gap: 10px;
     justify-content: center;
     align-content: center;
+
+    .loading-container{
+        display: flex;
+        justify-items: center;
+        align-content: center;
+        .loading-text{
+            margin-right: 10px;
+        }
+        .loading-dot{
+            margin-right: 5px;
+            &.in-progress{}
+        }
+    }
+
     .friend-container.hidden {
         visibility: hidden;
         opacity: 0;
