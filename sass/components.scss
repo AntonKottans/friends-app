@@ -147,9 +147,10 @@ $radio-pagination-color-hover: #84dca7;
     .loading-container{
         .loading-text{
             color: white;
+            font-size: 30px;
         }
         .loading-dot{
-            background-color: $light-gradient-color;
+            background-color: $menu-background;
             &.in-progress{
                 background-color: $dark-gradient-color;
             }
@@ -173,14 +174,14 @@ $radio-pagination-color-hover: #84dca7;
         box-shadow: 2px 2px 5px $dark-gradient-color;
         color: $text-color;
 
-        [class$="-name"],
+        .name,
         .email {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        [class$="-name"] {
+        .name {
             font-size: 20px;
         }
     }

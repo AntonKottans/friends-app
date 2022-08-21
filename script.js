@@ -9,7 +9,9 @@ const pipe = (...arrayOfFunctions) => {
 };
 
 let containerForFriends;
-
+const state = {
+    loading: false
+}
 const userStorageCreator = () => {
     let userDB = [];
     return {
@@ -295,13 +297,13 @@ const createAndShowPage = (
 };
 
 const doRecursiveFetch = (url, attempts) => {
-    console.log("attempts", attempts);
     return fetch(url)
         .then((response) => {
-            console.log(response.status);
             if (response.ok) return response.json();
         })
-        .catch(() => doRecursiveFetch(url, attempts - 1));
+        .catch((error) => {
+            return doRecursiveFetch(url, attempts - 1);
+        });
 };
 
 const getUserData = (url = "https://randomuser.me/api/", attempts = 5) => {
@@ -325,6 +327,7 @@ const downloadUsers = async ({ pages = 1, seed = "google", result = 1 }) => {
         loadingContainer.classList.add("loading-container");
         const loadingText = document.createElement("span");
         loadingText.classList.add("loading-text");
+        loadingText.insertAdjacentText("afterbegin", "Loading");
         loadingProgressDots = [...new Array(pages)].map((_, i) => {
             const dot = document.createElement("div");
             dot.classList.add("in-progress", "loading-dot");
@@ -335,16 +338,17 @@ const downloadUsers = async ({ pages = 1, seed = "google", result = 1 }) => {
     };
 
     placeLoadingIndicator();
+    state.loading = true;
     userStorage.clearUsers();
 
     for (let i = 1; i <= pages; i++) {
-        console.log(i);
         const users = await getUserData(
             `https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}`
         );
         loadingProgressDots[i - 1].classList.remove("in-progress");
         userStorage.addUsers(users.results);
     }
+    state.loading = false;
 };
 
 let createFriendCard = (user) => {
@@ -357,9 +361,7 @@ let createFriendCard = (user) => {
 
     const addName = (friend) => {
         const friendName = document.createElement("span");
-        /*         friendName.classList.add(
-            user.gender === "male" ? "friend-male-name" : "friend-female-name"
-        ); */
+        friendName.classList.add('name');
         friendName.textContent = `${user.name.title}. ${user.name.first} ${user.name.last}`;
         friend.appendChild(friendName);
         return friend;
@@ -464,6 +466,8 @@ const getFilteredStorage = (filter = userFilter) => {
 };
 
 const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
+    if(state.loading)
+        return undefined
     const filteredUserStorage = getFilteredStorage();
     const { amountPerPage: amountOfFriendsPerPage, amountOfPages: totalPages } =
         calcPagesAmount(
@@ -583,3 +587,5 @@ document.addEventListener("DOMContentLoaded", (event) => {
     containerForFriends = document.querySelector(".friends-container");
     downloadFriends();
 });
+
+

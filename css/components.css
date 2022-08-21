@@ -79,9 +79,10 @@
 .friends-container {
   overflow: hidden; }
   .friends-container .loading-container .loading-text {
-    color: white; }
+    color: white;
+    font-size: 30px; }
   .friends-container .loading-container .loading-dot {
-    background-color: #014546; }
+    background-color: #88ccff; }
     .friends-container .loading-container .loading-dot.in-progress {
       background-color: #001d1e; }
   .friends-container .portrait {
@@ -93,12 +94,12 @@
     overflow: hidden;
     box-shadow: 2px 2px 5px #001d1e;
     color: #cccccc; }
-    .friends-container .friend-container [class$="-name"],
+    .friends-container .friend-container .name,
     .friends-container .friend-container .email {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis; }
-    .friends-container .friend-container [class$="-name"] {
+    .friends-container .friend-container .name {
       font-size: 20px; }
 
 .radio-nav-container .pagination-dots {

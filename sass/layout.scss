@@ -105,14 +105,18 @@
 
     .loading-container{
         display: flex;
-        justify-items: center;
-        align-content: center;
+        justify-content: center;
+        align-items: center;
+        width: max-content;
+        height: max-content;
         .loading-text{
             margin-right: 10px;
         }
         .loading-dot{
             margin-right: 5px;
-            &.in-progress{}
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
         }
     }
 
@@ -136,7 +140,7 @@
             padding: 0px 10px;
         }
 
-        [class$="-name"] {
+        .name {
             width: 100%;
             text-align: center;
             padding: 5px;
