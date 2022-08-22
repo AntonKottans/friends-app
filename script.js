@@ -10,8 +10,8 @@ const pipe = (...arrayOfFunctions) => {
 
 let containerForFriends;
 const state = {
-    loading: false
-}
+    loading: false,
+};
 const userStorageCreator = () => {
     let userDB = [];
     return {
@@ -310,7 +310,7 @@ const getUserData = (url = "https://randomuser.me/api/", attempts = 5) => {
     return doRecursiveFetch(url, attempts);
 };
 
-const downloadUsers = async ({ pages = 1, seed = "google", result = 1 }) => {
+const downloadUsers = ({ pages = 1, seed = "google", result = 1 }) => {
     const userFieldsList = [
         "name",
         "dob",
@@ -341,14 +341,17 @@ const downloadUsers = async ({ pages = 1, seed = "google", result = 1 }) => {
     state.loading = true;
     userStorage.clearUsers();
 
-    for (let i = 1; i <= pages; i++) {
-        const users = await getUserData(
-            `https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i}&results=${result}`
-        );
-        loadingProgressDots[i - 1].classList.remove("in-progress");
-        userStorage.addUsers(users.results);
-    }
-    state.loading = false;
+    return Promise.all(
+        [...new Array(pages)].map((_, i) => {
+            console.log(_, i);
+            return getUserData(
+                `https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i + 1}&results=${result}`
+            ).then((users) => {
+                loadingProgressDots[i].classList.remove("in-progress");
+                userStorage.addUsers(users.results);
+            });
+        })
+    ).then(() => (state.loading = false));
 };
 
 let createFriendCard = (user) => {
@@ -361,7 +364,7 @@ let createFriendCard = (user) => {
 
     const addName = (friend) => {
         const friendName = document.createElement("span");
-        friendName.classList.add('name');
+        friendName.classList.add("name");
         friendName.textContent = `${user.name.title}. ${user.name.first} ${user.name.last}`;
         friend.appendChild(friendName);
         return friend;
@@ -466,8 +469,7 @@ const getFilteredStorage = (filter = userFilter) => {
 };
 
 const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
-    if(state.loading)
-        return undefined
+    if (state.loading) return undefined;
     const filteredUserStorage = getFilteredStorage();
     const { amountPerPage: amountOfFriendsPerPage, amountOfPages: totalPages } =
         calcPagesAmount(
