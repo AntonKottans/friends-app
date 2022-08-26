@@ -297,11 +297,12 @@ const createAndShowPage = (
 };
 
 const doRecursiveFetch = (url, attempts) => {
+    if(attempts===0) return
     return fetch(url)
         .then((response) => {
             if (response.ok) return response.json();
         })
-        .catch((error) => {
+        .catch((_) => {
             return doRecursiveFetch(url, attempts - 1);
         });
 };
