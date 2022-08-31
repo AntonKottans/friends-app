@@ -8,27 +8,27 @@ const pipe = (...arrayOfFunctions) => {
     )();
 };
 
+const friendsStorageCreator = () => {
+    let friendsDB = [];
+    return {
+        addFriends: (friends) => {
+            friendsDB = friendsDB.concat(friends);
+        },
+        recieveFriends: () => {
+            return friendsDB;
+        },
+        clearFriends: () => {
+            friendsDB = [];
+        },
+    };
+};
+const friendsStorage = friendsStorageCreator();
 let containerForFriends;
 const state = {
     loading: false,
 };
-const userStorageCreator = () => {
-    let userDB = [];
-    return {
-        addUsers: (users) => {
-            userDB = userDB.concat(users);
-        },
-        getUsers: () => {
-            return userDB;
-        },
-        clearUsers: () => {
-            userDB = [];
-        },
-    };
-};
-const userStorage = userStorageCreator();
 
-const userFilter = {
+const friendsFilter = {
     MIN_AGE: 0,
     MAX_AGE: 200,
     sortByAge: null,
@@ -45,7 +45,7 @@ const userFilter = {
         this.sexFilter = "all";
     },
 };
-userFilter.reset();
+friendsFilter.reset();
 
 const cardSize = {
     width: 200,
@@ -107,7 +107,7 @@ const createAndShowPage = (
     filteredStorage
 ) => {
     const showPaginationLablesAndDots = (container) => {
-        const lablesToShow = getLablesToShow(container, 9, pageNumber);
+        const lablesToShow = createLablesToShow(container, 9, pageNumber);
         container.querySelectorAll(".radio-nav-label").forEach((labelNode) => {
             if (lablesToShow.pageNumberArr.includes(+labelNode.textContent))
                 labelNode.classList.remove("hidden-page-number");
@@ -134,7 +134,11 @@ const createAndShowPage = (
         }
     };
 
-    const getLablesToShow = (navContainer, totalNumbers = 5, currentNumber) => {
+    const createLablesToShow = (
+        navContainer,
+        totalNumbers = 5,
+        currentNumber
+    ) => {
         const amountOfRadioLabels =
             navContainer.querySelectorAll(".radio-nav-label").length;
         let dotsFlags = { left: false, right: false };
@@ -168,20 +172,21 @@ const createAndShowPage = (
         };
 
         const addLabels = (container) => {
-            [...new Array(totalPages)]
-                .map((_) => document.createElement("label"))
-                .map((labelNode, i) => {
-                    labelNode.setAttribute("for", `radio-${i + 1}`);
-                    labelNode.classList.add(
-                        `radio-nav-label`,
-                        "hidden-page-number"
-                    );
-                    if (i + 1 === pageNumber)
-                        labelNode.classList.add("checked");
-                    labelNode.innerText = i + 1;
-                    return labelNode;
-                })
-                .forEach((labelNode) => container.appendChild(labelNode));
+            container.append(
+                ...[...new Array(totalPages)]
+                    .map((_) => document.createElement("label"))
+                    .map((labelNode, i) => {
+                        labelNode.setAttribute("for", `radio-${i + 1}`);
+                        labelNode.classList.add(
+                            `radio-nav-label`,
+                            "hidden-page-number"
+                        );
+                        if (i + 1 === pageNumber)
+                            labelNode.classList.add("checked");
+                        labelNode.innerText = i + 1;
+                        return labelNode;
+                    })
+            );
             return container;
         };
 
@@ -205,8 +210,8 @@ const createAndShowPage = (
         };
 
         const addInputs = (container) => {
-            const radioArr = [...new Array(totalPages)]
-                .map((_, i) => {
+            container.append(
+                ...[...new Array(totalPages)].map((_, i) => {
                     const inputNode = document.createElement("input");
                     inputNode.setAttribute("type", "radio");
                     inputNode.setAttribute("name", "page-nav");
@@ -214,7 +219,7 @@ const createAndShowPage = (
                     inputNode.classList.add("radio-nav-input");
                     return inputNode;
                 })
-                .forEach((radioNode) => container.appendChild(radioNode));
+            );
             return container;
         };
 
@@ -263,21 +268,21 @@ const createAndShowPage = (
         );
     };
 
-    const createFragmentFromUsers = () => {
+    const createFragmentFromFriends = () => {
         const fragment = document.createDocumentFragment();
-        filteredStorage
-            .slice(
-                amountOfFriends * (pageNumber - 1),
-                amountOfFriends * pageNumber
-            )
-            .forEach((userCard) =>
-                fragment.appendChild(createFriendCard(userCard))
-            );
+        fragment.append(
+            ...filteredStorage
+                .slice(
+                    amountOfFriends * (pageNumber - 1),
+                    amountOfFriends * pageNumber
+                )
+                .map((friendCard,i,arr) => createFriendCard(friendCard))
+        );
         return fragment;
     };
 
     containerForFriends.innerHTML = "";
-    const fragment = createFragmentFromUsers();
+    const fragment = createFragmentFromFriends();
     containerForFriends.appendChild(fragment);
     if (document.querySelector(".radio-nav-container"))
         document
@@ -297,7 +302,7 @@ const createAndShowPage = (
 };
 
 const doRecursiveFetch = (url, attempts) => {
-    if(attempts===0) return
+    if (attempts === 0) return;
     return fetch(url)
         .then((response) => {
             if (response.ok) return response.json();
@@ -307,12 +312,12 @@ const doRecursiveFetch = (url, attempts) => {
         });
 };
 
-const getUserData = (url = "https://randomuser.me/api/", attempts = 5) => {
-    return doRecursiveFetch(url, attempts);
-};
-
-const downloadUsers = ({ pages = 1, seed = "google", result = 1 }) => {
-    const userFieldsList = [
+const downloadFriends = ({
+    pages = 5,
+    seed = "google",
+    friendsPerPage = 10,
+}) => {
+    const friendFieldsList = [
         "name",
         "dob",
         "email",
@@ -340,73 +345,77 @@ const downloadUsers = ({ pages = 1, seed = "google", result = 1 }) => {
 
     placeLoadingIndicator();
     state.loading = true;
-    userStorage.clearUsers();
+    friendsStorage.clearFriends();
 
-    return Promise.all(
+    Promise.all(
         [...new Array(pages)].map((_, i) => {
-            console.log(_, i);
-            return getUserData(
-                `https://randomuser.me/api/?inc=${userFieldsList}&seed=${seed}&page=${i + 1}&results=${result}`
-            ).then((users) => {
+            return doRecursiveFetch(
+                `https://randomuser.me/api/?inc=${friendFieldsList}&seed=${seed}&page=${
+                    i + 1
+                }&results=${friendsPerPage}`
+            ).then((response) => {
                 loadingProgressDots[i].classList.remove("in-progress");
-                userStorage.addUsers(users.results);
+                friendsStorage.addFriends(response.results);
             });
         })
-    ).then(() => (state.loading = false));
+    ).then(() => {
+        state.loading = false;
+        updateContentAccordingToActiveFilters();
+    });
 };
 
-let createFriendCard = (user) => {
+let createFriendCard = (friend) => {
     const createFriendContainer = () => {
-        const friend = document.createElement("div");
-        friend.classList.add("friend-container", "hidden");
+        const friendCard = document.createElement("div");
+        friendCard.classList.add("friend-container", "hidden");
 
-        return friend;
+        return friendCard;
     };
 
-    const addName = (friend) => {
+    const addName = (friendCard) => {
         const friendName = document.createElement("span");
         friendName.classList.add("name");
-        friendName.textContent = `${user.name.title}. ${user.name.first} ${user.name.last}`;
-        friend.appendChild(friendName);
-        return friend;
+        friendName.textContent = `${friend.name.title}. ${friend.name.first} ${friend.name.last}`;
+        friendCard.appendChild(friendName);
+        return friendCard;
     };
 
-    const addPortrait = (friend) => {
+    const addPortrait = (friendCard) => {
         const friendPortrait = document.createElement("img");
-        friendPortrait.setAttribute("src", user.picture.large);
-        friendPortrait.setAttribute("alt", "random user");
+        friendPortrait.setAttribute("src", friend.picture.large);
+        friendPortrait.setAttribute("alt", "random friend");
         friendPortrait.classList.add("portrait");
-        friend.appendChild(friendPortrait);
-        return friend;
+        friendCard.appendChild(friendPortrait);
+        return friendCard;
     };
 
-    const addDOB = (friend) => {
+    const addDOB = (friendCard) => {
         const friendDOB = document.createElement("span");
-        friendDOB.textContent = `I am ${user.dob.age} years old.`;
-        friend.appendChild(friendDOB);
-        return friend;
+        friendDOB.textContent = `I am ${friend.dob.age} years old.`;
+        friendCard.appendChild(friendDOB);
+        return friendCard;
     };
 
-    const addEmail = (friend) => {
+    const addEmail = (friendCard) => {
         const friendEmail = document.createElement("span");
-        friendEmail.textContent = user.email;
+        friendEmail.textContent = friend.email;
         friendEmail.classList.add("email");
-        friend.appendChild(friendEmail);
-        return friend;
+        friendCard.appendChild(friendEmail);
+        return friendCard;
     };
 
-    const addCell = (friend) => {
+    const addCell = (friendCard) => {
         const friendCell = document.createElement("span");
-        friendCell.textContent = user.cell;
-        friend.appendChild(friendCell);
-        return friend;
+        friendCell.textContent = friend.cell;
+        friendCard.appendChild(friendCell);
+        return friendCard;
     };
 
-    const addGender = (friend) => {
+    const addGender = (friendCard) => {
         const friendGender = document.createElement("span");
-        friendGender.textContent = user.gender.toUpperCase();
-        friend.appendChild(friendGender);
-        return friend;
+        friendGender.textContent = friend.gender.toUpperCase();
+        friendCard.appendChild(friendGender);
+        return friendCard;
     };
 
     return pipe(
@@ -420,77 +429,69 @@ let createFriendCard = (user) => {
     );
 };
 
-const getFilteredStorage = (filter = userFilter) => {
-    let filteredUserStorage = userStorage.getUsers();
+const getFilteredStorage = (filter = friendsFilter) => {
+    let filteredfriendsStorage = friendsStorage.recieveFriends();
     if (filter.ageFilterRange.max - filter.ageFilterRange.min >= 0)
-        filteredUserStorage = filteredUserStorage.filter(
-            (user) =>
-                user.dob.age >= filter.ageFilterRange.min &&
-                user.dob.age <= filter.ageFilterRange.max
+        filteredfriendsStorage = filteredfriendsStorage.filter(
+            (friend) =>
+                friend.dob.age >= filter.ageFilterRange.min &&
+                friend.dob.age <= filter.ageFilterRange.max
         );
     if (filter.nameFilter !== "")
-        filteredUserStorage = filteredUserStorage.filter((user) =>
-            `${user.name.first} ${user.name.last}`
+        filteredfriendsStorage = filteredfriendsStorage.filter((friend) =>
+            `${friend.name.first} ${friend.name.last}`
                 .toUpperCase()
                 .includes(filter.nameFilter.toUpperCase())
         );
     if (filter.sexFilter != "all") {
-        filteredUserStorage = filteredUserStorage.filter(
-            (user) => user.gender === filter.sexFilter
+        filteredfriendsStorage = filteredfriendsStorage.filter(
+            (friend) => friend.gender === filter.sexFilter
         );
     }
     if (filter.sortByAge != null) {
         if (filter.sortByAge === "ascending")
-            filteredUserStorage.sort(
-                (user1, user2) => user1.dob.age - user2.dob.age
+            filteredfriendsStorage.sort(
+                (friend1, friend2) => friend1.dob.age - friend2.dob.age
             );
         if (filter.sortByAge === "descending")
-            filteredUserStorage.sort(
-                (user1, user2) => user2.dob.age - user1.dob.age
+            filteredfriendsStorage.sort(
+                (friend1, friend2) => friend2.dob.age - friend1.dob.age
             );
     }
     if (filter.sortByName != null) {
         if (filter.sortByName === "ascending")
-            filteredUserStorage.sort((user1, user2) => {
-                return `${user1.name.first} ${user1.name.last}` >
-                    `${user2.name.first} ${user2.name.last}`
+            filteredfriendsStorage.sort((friend1, friend2) => {
+                return `${friend1.name.first} ${friend1.name.last}` >
+                    `${friend2.name.first} ${friend2.name.last}`
                     ? 1
                     : -1;
             });
         if (filter.sortByName === "descending")
-            filteredUserStorage.sort((user1, user2) => {
-                return `${user1.name.first} ${user1.name.last}` <
-                    `${user2.name.first} ${user2.name.last}`
+            filteredfriendsStorage.sort((friend1, friend2) => {
+                return `${friend1.name.first} ${friend1.name.last}` <
+                    `${friend2.name.first} ${friend2.name.last}`
                     ? 1
                     : -1;
             });
     }
 
-    return filteredUserStorage;
+    return filteredfriendsStorage;
 };
 
 const updateContentAccordingToActiveFilters = (pageNumber = 1) => {
     if (state.loading) return undefined;
-    const filteredUserStorage = getFilteredStorage();
+    const filteredfriendsStorage = getFilteredStorage();
     const { amountPerPage: amountOfFriendsPerPage, amountOfPages: totalPages } =
         calcPagesAmount(
             containerForFriends.clientHeight,
             containerForFriends.clientWidth,
-            filteredUserStorage.length
+            filteredfriendsStorage.length
         );
     createAndShowPage(
         pageNumber,
         amountOfFriendsPerPage,
         totalPages,
-        filteredUserStorage
-    );
-};
-
-const downloadFriends = (amountPerPage = 10) => {
-    downloadUsers({ pages: 5, seed: "google", result: amountPerPage }).then(
-        () => {
-            updateContentAccordingToActiveFilters();
-        }
+        filteredfriendsStorage
     );
 };
 
@@ -516,7 +517,7 @@ const addEventListeners = () => {
             !event.target.value[event.target.value.length - 1].match(/[\w\D ]/)
         )
             event.target.value = event.target.value.slice(0, -1);
-        userFilter.nameFilter = document.querySelector("#name-input").value;
+        friendsFilter.nameFilter = document.querySelector("#name-input").value;
         updateContentAccordingToActiveFilters();
     });
 
@@ -525,13 +526,13 @@ const addEventListeners = () => {
         .addEventListener("input", ({ target }) => {
             if (target.matches(".age-input")) {
                 if (target.getAttribute("id") === "start-age")
-                    userFilter.ageFilterRange.min = target.value
+                    friendsFilter.ageFilterRange.min = target.value
                         ? +target.value
-                        : userFilter.MIN_AGE;
+                        : friendsFilter.MIN_AGE;
                 else if (target.getAttribute("id") === "end-age")
-                    userFilter.ageFilterRange.max = target.value
+                    friendsFilter.ageFilterRange.max = target.value
                         ? +target.value
-                        : userFilter.MAX_AGE;
+                        : friendsFilter.MAX_AGE;
                 updateContentAccordingToActiveFilters();
             }
         });
@@ -541,31 +542,32 @@ const addEventListeners = () => {
         .addEventListener("click", (event) => {
             if (event.target.matches("button")) event.preventDefault();
 
-            let id = event.target.getAttribute("id");
+            const id = event.target.getAttribute("id");
             if (id === "age-ascending")
-                (userFilter.sortByAge = "ascending"),
-                    (userFilter.sortByName = null);
+                (friendsFilter.sortByAge = "ascending"),
+                    (friendsFilter.sortByName = null);
             else if (id === "age-descending")
-                (userFilter.sortByAge = "descending"),
-                    (userFilter.sortByName = null);
+                (friendsFilter.sortByAge = "descending"),
+                    (friendsFilter.sortByName = null);
             else if (id === "name-ascending")
-                (userFilter.sortByName = "ascending"),
-                    (userFilter.sortByAge = null);
+                (friendsFilter.sortByName = "ascending"),
+                    (friendsFilter.sortByAge = null);
             else if (id === "name-descending")
-                (userFilter.sortByName = "descending"),
-                    (userFilter.sortByAge = null);
+                (friendsFilter.sortByName = "descending"),
+                    (friendsFilter.sortByAge = null);
             else if (["all", "male", "female"].includes(id)) {
-                userFilter.sexFilter = id;
+                friendsFilter.sexFilter = id;
                 updateContentAccordingToActiveFilters();
-            } else if (id === "reset")
-                userFilter.reset(),
+            } else if (id === "reset") {
+                friendsFilter.reset(),
                     document
-                        .querySelectorAll(".sort-menu-button")
-                        .forEach((node) => node.classList.remove("selected")),
-                    (document.querySelector("#start-age").value = ""),
-                    (document.querySelector("#end-age").value = ""),
-                    (document.querySelector("#name-input").value = ""),
-                    (document.querySelector("#all").checked = true);
+                        .querySelectorAll(".selected")
+                        .classList.remove("selected");
+                document.querySelector("#start-age").value = "";
+                document.querySelector("#end-age").value = "";
+                document.querySelector("#name-input").value = "";
+                document.querySelector("#all").checked = true;
+            }
 
             if (event.target.matches("button"))
                 updateContentAccordingToActiveFilters();
@@ -588,7 +590,6 @@ const resizeThrottler = (() => {
 document.addEventListener("DOMContentLoaded", (event) => {
     addEventListeners();
     containerForFriends = document.querySelector(".friends-container");
-    downloadFriends();
+    downloadFriends({});
 });
-
 
