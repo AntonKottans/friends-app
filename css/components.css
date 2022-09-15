@@ -16,21 +16,21 @@
 .controls-layout-container {
   background: no-repeat url("../img/leaf.svg"), linear-gradient(#001d1e 0%, #014546 100%), #88ccff;
   border-radius: 10px; }
-  .controls-layout-container .sort-menu_label {
+  .controls-layout-container .sort-menu .sort-menu-label {
     color: #cccccc;
     user-select: none; }
   .controls-layout-container .sort-menu [id$="descending"] {
     background: center/40px 20px no-repeat url("../img/descending-sort-svgrepo-com.svg"), #014546; }
   .controls-layout-container .sort-menu [id$="ascending"] {
     background: center/40px 20px no-repeat url("../img/ascending-sort-svgrepo-com.svg"), #014546; }
-  .controls-layout-container .sort-menu-button {
+  .controls-layout-container .sort-menu .selected {
+    box-shadow: 0px 0px 10px #ff4081; }
+  .controls-layout-container .sort-menu .sort-menu-button {
     border: none;
     border-radius: 5px; }
-    .controls-layout-container .sort-menu-button:hover {
+    .controls-layout-container .sort-menu .sort-menu-button:hover {
       cursor: pointer;
       background-color: #236768; }
-    .controls-layout-container .sort-menu-button.selected {
-      box-shadow: 0px 0px 10px #ff4081; }
   .controls-layout-container .filter-menu .age-input,
   .controls-layout-container .filter-menu .name-input {
     background-color: rgba(200, 200, 200, 0.5);
@@ -52,7 +52,8 @@
   .controls-layout-container .filter-menu .age-input {
     text-align: center; }
   .controls-layout-container .filter-menu .sex-filter-container .radio-container .radio-sex-input {
-    opacity: 0.5; }
+    opacity: 0.5;
+    cursor: pointer; }
   .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label {
     color: #cccccc;
     user-select: none; }
@@ -81,10 +82,10 @@
   .friends-container .loading-container .loading-text {
     color: white;
     font-size: 30px; }
+  .friends-container .loading-container .in-progress {
+    background-color: #001d1e; }
   .friends-container .loading-container .loading-dot {
     background-color: #88ccff; }
-    .friends-container .loading-container .loading-dot.in-progress {
-      background-color: #001d1e; }
   .friends-container .portrait {
     user-select: none;
     -webkit-user-drag: none; }
@@ -95,15 +96,23 @@
     box-shadow: 2px 2px 5px #001d1e;
     color: #cccccc; }
     .friends-container .friend-container .name,
-    .friends-container .friend-container .email {
+    .friends-container .friend-container .email,
+    .friends-container .friend-container .tel {
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis; }
+      text-overflow: ellipsis;
+      color: white;
+      text-decoration: none; }
     .friends-container .friend-container .name {
       font-size: 20px; }
 
 .radio-nav-container .pagination-dots {
-  color: #62ba85; }
+  color: #62ba85;
+  cursor: default; }
+
+.radio-nav-container .checked {
+  background-color: #003435;
+  font-weight: 600; }
 
 .radio-nav-container .radio-nav-label {
   border-radius: 5px;
@@ -111,6 +120,3 @@
   .radio-nav-container .radio-nav-label:hover {
     cursor: pointer;
     color: #84dca7; }
-  .radio-nav-container .radio-nav-label.checked {
-    background-color: #003435;
-    font-weight: 600; }

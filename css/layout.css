@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box; }
+
 .body {
   display: grid;
   grid-template: 100% / max-content 1fr;
@@ -34,7 +37,7 @@
     justify-items: center;
     align-items: center;
     justify-content: center; }
-    .controls-layout-container .sort-menu-button {
+    .controls-layout-container .sort-menu .sort-menu-button {
       width: 50px;
       height: 25px; }
   .controls-layout-container .filter-menu {
@@ -108,7 +111,8 @@
     .friends-container .friend-container .name {
       width: 100%;
       text-align: center;
-      padding: 5px; }
+      padding: 5px;
+      margin: 0; }
     .friends-container .friend-container .email {
       width: 100%;
       text-align: center; }
@@ -130,15 +134,15 @@
     opacity: 1;
     visibility: visible;
     transition: opacity 1s, visibility 1s; }
-    .radio-nav-container .pagination-dots.hidden {
-      display: none;
-      opacity: 0;
-      visibility: hidden; }
+  .radio-nav-container .hidden {
+    display: none;
+    opacity: 0;
+    visibility: hidden; }
+  .radio-nav-container .hidden-page-number {
+    display: none; }
   .radio-nav-container .radio-nav-label {
     padding: 2px 5px;
     font-size: 24px; }
-    .radio-nav-container .radio-nav-label.hidden-page-number {
-      display: none; }
   .radio-nav-container .radio-nav-input {
     display: none; }
 
