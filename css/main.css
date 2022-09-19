@@ -123,28 +123,27 @@
       text-overflow: ellipsis;
       max-width: 100%; }
 
-.radio-nav-container {
+.nav-container {
   display: inline-flex;
   width: 100%;
-  justify-content: center; }
-  .radio-nav-container .pagination-dots {
+  justify-content: center;
+  align-items: center; }
+  .nav-container .pagination-list {
+    list-style: none;
     display: grid;
-    align-items: end;
-    padding: 3px;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 1s, visibility 1s; }
-  .radio-nav-container .hidden {
-    display: none;
-    opacity: 0;
-    visibility: hidden; }
-  .radio-nav-container .hidden-page-number {
-    display: none; }
-  .radio-nav-container .radio-nav-label {
-    padding: 2px 5px;
-    font-size: 24px; }
-  .radio-nav-container .radio-nav-input {
-    display: none; }
+    grid-auto-flow: column;
+    margin: 0; }
+    .nav-container .pagination-list .nav-list-item {
+      display: flex;
+      align-items: center; }
+    .nav-container .pagination-list .pagination-dots {
+      padding: 3px; }
+    .nav-container .pagination-list .hidden {
+      display: none; }
+    .nav-container .pagination-list .hidden-page-number {
+      display: none; }
+    .nav-container .pagination-list .pagination-link {
+      padding: 2px 5px; }
 
 @media (max-width: 860px) and (min-width: 600px) {
   .body {
@@ -230,7 +229,7 @@
     user-select: none; }
   .controls-layout-container .filter-menu .age-input {
     text-align: center; }
-  .controls-layout-container .filter-menu .sex-filter-container .radio-container .radio-sex-input {
+  .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-input {
     opacity: 0.5;
     cursor: pointer; }
   .controls-layout-container .filter-menu .sex-filter-container .radio-container .sex-filter-label {
@@ -285,17 +284,23 @@
     .friends-container .friend-container .name {
       font-size: 20px; }
 
-.radio-nav-container .pagination-dots {
+.nav-container .pagination-dots {
   color: #62ba85;
+  line-height: 24px;
   cursor: default; }
 
-.radio-nav-container .checked {
+.nav-container .active {
   background-color: #003435;
   font-weight: 600; }
 
-.radio-nav-container .radio-nav-label {
-  border-radius: 5px;
-  color: #62ba85; }
-  .radio-nav-container .radio-nav-label:hover {
+.nav-container .nav-list-item {
+  border-radius: 5px; }
+
+.nav-container .pagination-link {
+  color: #62ba85;
+  text-decoration: none;
+  font-size: 24px;
+  line-height: 24px; }
+  .nav-container .pagination-link:hover {
     cursor: pointer;
     color: #84dca7; }
