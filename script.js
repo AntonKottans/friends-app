@@ -335,7 +335,7 @@ const downloadFriends = ({
   });
 };
 
-let createFriendCard = (friend) => {
+const createFriendCard = (friend) => {
   const createFriendContainer = () => {
     const friendCard = document.createElement("article");
     friendCard.classList.add("friend-container", "hidden");
@@ -440,6 +440,7 @@ const getFilteredStorage = (filter = state.friendsFilter) => {
     if (filter.sortByAge === null) {
       return friends;
     }
+    //prettier-ignore
     return friends.slice().sort((friend1, friend2) => {
       return (friend1.dob.age - friend2.dob.age)*
         (filter.sortByAge === "ascending"?1:-1);
@@ -451,6 +452,7 @@ const getFilteredStorage = (filter = state.friendsFilter) => {
       return friends;
     }
     return friends.slice().sort((friend1, friend2) => {
+      //prettier-ignore
       return (`${friend1.name.first} ${friend1.name.last}` >
         `${friend2.name.first} ${friend2.name.last}`? 1: -1)
         *(filter.sortByName === "ascending"?1:-1);
@@ -545,7 +547,8 @@ const addEventListeners = () => {
         updateContentAccordingToActiveFilters({ page: 1 });
       } else if (id === "reset") {
         resetFilters();
-        document.querySelectorAll(".selected").classList.remove("selected");
+        if(document.querySelector(".selected"))
+          document.querySelectorAll(".selected").classList.remove("selected");
         document.querySelector("#start-age").value = "";
         document.querySelector("#end-age").value = "";
         document.querySelector("#name-input").value = "";
