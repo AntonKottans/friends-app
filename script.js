@@ -548,7 +548,7 @@ const addEventListeners = () => {
       } else if (id === "reset") {
         resetFilters();
         if(document.querySelector(".selected"))
-          document.querySelectorAll(".selected").classList.remove("selected");
+          document.querySelector(".selected").classList.remove("selected");
         document.querySelector("#start-age").value = "";
         document.querySelector("#end-age").value = "";
         document.querySelector("#name-input").value = "";
