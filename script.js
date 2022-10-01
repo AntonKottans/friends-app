@@ -179,7 +179,7 @@ const createPagesNavigation = ({ totalPages, currentPage }) => {
         const linkNode = document.createElement("a");
         listItemNode.classList.add("nav-list-item", "hidden-page-number");
         linkNode.classList.add("pagination-link");
-        linkNode.setAttribute("href", `${i + 1}`);
+        linkNode.setAttribute("href", `#${i + 1}`);
         if (i + 1 === +currentPage) {
           listItemNode.classList.add("active");
         }
@@ -194,8 +194,6 @@ const createPagesNavigation = ({ totalPages, currentPage }) => {
   const addEventHandler = (container) => {
     container.addEventListener("click", (event) => {
       if (!event.target.matches(".pagination-link")) return undefined;
-      event.preventDefault();
-      window.location.hash = `#${event.target.getAttribute("href")}`;
       document.querySelector(".active").classList.remove("active");
       event.target.closest(".nav-list-item").classList.add("active");
     });
